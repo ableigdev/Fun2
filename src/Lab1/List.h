@@ -41,18 +41,7 @@ List<NODETYPE>::~List()
 {
 	if (!isEmpty())
 	{
-		ListNode<NODETYPE>* currentPtr = firstPtr;
-		ListNode<NODETYPE>* tempPtr;
-
-		while (currentPtr->nextPtr != firstPtr)
-		{
-			tempPtr = currentPtr;
-			currentPtr = currentPtr->nextPtr;
-			delete tempPtr;
-		}
-
-		if (currentPtr != 0)
-			delete currentPtr;
+		deleteAllElements();
 	}
 }
 
@@ -183,6 +172,32 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 			return false;
 		}
 		
+	}
+	else
+	{
+		return false;
+	}
+}
+
+template <typename NODETYPE>
+bool List<NODETYPE>::deleteAllElements()
+{
+	if (!isEmpty())
+	{
+		ListNode<NODETYPE>* currentPtr = firstPtr;
+		ListNode<NODETYPE>* tempPtr;
+
+		while (currentPtr->nextPtr != firstPtr)
+		{
+			tempPtr = currentPtr;
+			currentPtr = currentPtr->nextPtr;
+			delete tempPtr;
+		}
+
+		if (currentPtr != 0)
+			delete currentPtr;
+
+		return true;
 	}
 	else
 	{
