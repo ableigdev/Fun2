@@ -10,6 +10,7 @@ public:
 
 	void pushFront(const NODETYPE&);
 	void pushBack(const NODETYPE&);
+	void pushInSortList(const NODETYPE&);
 
 	bool deleteElement(NODETYPE);
 	bool deleteAllElements();
@@ -112,6 +113,58 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 		newPtr->prevPtr = firstPtr->prevPtr;
 		firstPtr->prevPtr = newPtr;
 		tempPtr->nextPtr = newPtr;
+	}
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::pushInSortList(const NODETYPE& value)
+{
+	if (isEmpty())
+	{
+		pushFront(value);
+	}
+	else
+	{
+		if (value <= firstPtr->data)
+		{
+			pushFront(value);
+		}
+		else if (value >= firstPtr->prevPtr->data)
+		{
+			pushBack(value);
+		}
+		else
+		{
+
+			ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
+			newPtr->data = value;
+			newPtr->nextPtr = 0;
+			newPtr->prevPtr = 0;
+
+			ListNode<NODETYPE>* currentPtr = firstPtr;
+
+			while (currentPtr->nextPtr != firstPtr)
+			{
+				if (newPtr->data <= currentPtr->data)
+				{
+					ListNode<NODETYPE>* tempPtr = currentPtr->prevPtr;
+					tempPtr->nextPtr = newPtr;
+					newPtr->prevPtr = tempPtr;
+					newPtr->nextPtr = currentPtr;
+					currentPtr->prevPtr = newPtr;
+					return;
+				}
+				currentPtr = currentPtr->nextPtr;
+			}
+			if (newPtr->data <= currentPtr->data)
+			{
+				ListNode<NODETYPE>* tempPtr = currentPtr->prevPtr;
+				tempPtr->nextPtr = newPtr;
+				newPtr->prevPtr = tempPtr;
+				newPtr->nextPtr = currentPtr;
+				currentPtr->prevPtr = newPtr;
+			}
+		}
 	}
 }
 
