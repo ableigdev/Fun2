@@ -34,6 +34,7 @@ private:
 	};
 						
 	ListNode<NODETYPE>* firstPtr;
+	ListNode<NODETYPE>* currentNodePtr;
 
 private:
 	void copyList(const ListNode<NODETYPE>*);
@@ -41,7 +42,8 @@ private:
 
 template <typename NODETYPE>
 List<NODETYPE>::List()
-	: firstPtr(0)
+	: firstPtr(0),
+	currentNodePtr(0)
 {
 	
 }
@@ -56,6 +58,7 @@ List<NODETYPE>::List(const List<NODETYPE>& rList)
 	else
 	{
 		firstPtr = 0;
+		currentNodePtr = 0;
 	}
 	
 }
@@ -80,6 +83,7 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 
 	return *this;
 }
+
 template <typename NODETYPE>
 bool List<NODETYPE>::operator!() const
 {
@@ -142,6 +146,7 @@ void List<NODETYPE>::pushFront(const NODETYPE& value)
 		tempPtr->nextPtr = newPtr;
 		firstPtr = newPtr;
 	}
+	currentNodePtr = firstPtr;
 }
 
 template <typename NODETYPE>
@@ -164,6 +169,7 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 		firstPtr->prevPtr = newPtr;
 		tempPtr->nextPtr = newPtr;
 	}
+	currentNodePtr = firstPtr;
 }
 
 template <typename NODETYPE>
