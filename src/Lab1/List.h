@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ReadAccessViolation.h"
 
 template <class NODETYPE>
 class List
@@ -23,6 +24,8 @@ public:
 
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
+	NODETYPE& operator++();
+	NODETYPE& operator--();
 
 	const NODETYPE& getReferencesCurrentData() const;
 	NODETYPE getValueCurrentData() const;
@@ -91,6 +94,26 @@ template <typename NODETYPE>
 bool List<NODETYPE>::operator!() const
 {
 	return !isEmpty();
+}
+
+template <typename NODETYPE>
+NODETYPE& List<NODETYPE>::operator++()
+{
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+	
+	currentNodePtr = currentNodePtr->nextPtr;
+	return currentNodePtr->data;
+}
+
+template <typename NODETYPE>
+NODETYPE& List<NODETYPE>::operator--()
+{
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+	
+	currentNodePtr = currentNodePtr->prevPtr;
+	return currentNodePtr->data;
 }
 
 template <typename NODETYPE>
