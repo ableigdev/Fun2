@@ -6,6 +6,7 @@ class List
 {
 public:
 	List(); 
+	List(const List<NODETYPE>&);
 	~List();
 
 	void pushFront(const NODETYPE&);
@@ -18,7 +19,10 @@ public:
 	bool findValue(const NODETYPE&);
 
 	bool isEmpty() const;
-	void print() const; 
+	void print() const;
+
+	bool operator!() const;
+	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 
 private:
 	template <typename NODETYPE>
@@ -30,12 +34,29 @@ private:
 	};
 						
 	ListNode<NODETYPE>* firstPtr;
+
+private:
+	void copyList(const ListNode<NODETYPE>*);
 };
 
 template <typename NODETYPE>
 List<NODETYPE>::List()
 	: firstPtr(0)
 {
+	
+}
+
+template <typename NODETYPE>
+List<NODETYPE>::List(const List<NODETYPE>& rList)
+{
+	if (!rList)
+	{
+		copyList(rList.firstPtr);
+	}
+	else
+	{
+		firstPtr = 0;
+	}
 	
 }
 
@@ -49,11 +70,40 @@ List<NODETYPE>::~List()
 }
 
 template <typename NODETYPE>
+const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
+{
+	if (this != &rList)
+	{
+		deleteAllElements();
+		copyList(rList.firstPtr);
+	}
+
+	return *this;
+}
+template <typename NODETYPE>
+bool List<NODETYPE>::operator!() const
+{
+	return !isEmpty();
+}
+
+template <typename NODETYPE>
 bool List<NODETYPE>::isEmpty() const
 {
 	return firstPtr == 0;
 }
 
+template <typename NODETYPE>
+void List<NODETYPE>::copyList(const ListNode<NODETYPE>* rightPtr)
+{
+	const ListNode<NODETYPE>* currentRightPtr = rightPtr;
+	
+	while (currentRightPtr->nextPtr != rightPtr)
+	{
+		pushBack(currentRightPtr->data);
+		currentRightPtr = currentRightPtr->nextPtr;
+	}
+	pushBack(currentRightPtr->data);
+}
 template <typename NODETYPE>
 void List<NODETYPE>::print() const
 {
