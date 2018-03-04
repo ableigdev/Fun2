@@ -14,6 +14,8 @@ public:
 	bool deleteElement(NODETYPE);
 	bool deleteAllElements();
 
+	bool findValue(const NODETYPE&);
+
 	bool isEmpty() const;
 	void print() const; 
 
@@ -198,6 +200,43 @@ bool List<NODETYPE>::deleteAllElements()
 			delete currentPtr;
 
 		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+template <typename NODETYPE>
+bool List<NODETYPE>::findValue(const NODETYPE& value)
+{
+	if (!isEmpty())
+	{
+		ListNode<NODETYPE>* currentPtr = firstPtr;
+
+		if (currentPtr->data == value)
+		{
+			return true;
+		}
+		else
+		{
+			while (currentPtr->nextPtr != firstPtr)
+			{
+				if (currentPtr->data == value)
+				{
+					return true;
+				}
+				currentPtr = currentPtr->nextPtr;
+			}
+			if (currentPtr->data == value)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 	else
 	{
