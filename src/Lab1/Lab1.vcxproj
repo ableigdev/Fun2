@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="List.h" />
+    <ClInclude Include="ReadAccessViolation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
