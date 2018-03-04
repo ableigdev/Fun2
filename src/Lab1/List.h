@@ -24,6 +24,9 @@ public:
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 
+	const NODETYPE& getReferencesCurrentData() const;
+	NODETYPE getValueCurrentData() const;
+
 private:
 	template <typename NODETYPE>
 	struct ListNode
@@ -350,5 +353,31 @@ bool List<NODETYPE>::findValue(const NODETYPE& value)
 	else
 	{
 		return false;
+	}
+}
+
+template <typename NODETYPE>
+const NODETYPE& List<NODETYPE>::getReferencesCurrentData() const
+{
+	if (currentNodePtr != nullptr)
+	{
+		return currentNodePtr->data;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+template <typename NODETYPE>
+NODETYPE List<NODETYPE>::getValueCurrentData() const
+{
+	if (currentNodePtr != nullptr)
+	{
+		return currentNodePtr->data;
+	}
+	else
+	{
+		return 0;
 	}
 }
