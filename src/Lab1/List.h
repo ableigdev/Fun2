@@ -29,6 +29,7 @@ private:
 	};
 						
 	ListNode<NODETYPE>* firstPtr;
+	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
 };
 
 template <typename NODETYPE>
@@ -45,6 +46,17 @@ List<NODETYPE>::~List()
 	{
 		deleteAllElements();
 	}
+}
+
+template <typename NODETYPE>
+List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::getNewNode(const NODETYPE& value)
+{
+	ListNode<NODETYPE> *newPtr = new ListNode<NODETYPE>;
+	newPtr->data = value;
+	newPtr->nextPtr = 0;
+	newPtr->prevPtr = 0;
+
+	return newPtr;
 }
 
 template <typename NODETYPE>
