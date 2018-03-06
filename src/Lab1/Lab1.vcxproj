@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="List.h" />
+    <ClInclude Include="ListIterator.h" />
     <ClInclude Include="ReadAccessViolation.h" />
     <ClInclude Include="Student.h" />
   </ItemGroup>
