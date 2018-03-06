@@ -2,9 +2,12 @@
 
 #include "ReadAccessViolation.h"
 
+template <typename NODETYPE> class ListIterator;
+
 template <class NODETYPE>
 class List
 {
+	friend ListIterator<NODETYPE>;
 public:
 	List(); 
 	List(const List<NODETYPE>&);
