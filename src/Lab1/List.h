@@ -27,6 +27,8 @@ public:
 	bool isEmpty() const;
 	void print() const;
 
+	void sort();
+
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 	NODETYPE& operator++();
@@ -413,5 +415,71 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 	else
 	{
 		return 0;
+	}
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::sort()
+{
+	ListNode<NODETYPE>* currentPtr = firstPtr;
+	
+	if (currentPtr != 0)
+	{
+		if (currentPtr->nextPtr == firstPtr)
+		{
+			return;
+		}
+		else
+		{
+			for (; currentPtr->nextPtr != firstPtr; currentPtr = currentPtr->nextPtr)
+			{		
+				ListNode<NODETYPE>* tempPtr = currentPtr;
+				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
+				for (; secondCurrentPtr->nextPtr != firstPtr; secondCurrentPtr = secondCurrentPtr->nextPtr)
+				{
+					ListNode<NODETYPE>* secondTempPtr = secondCurrentPtr;
+
+					if (tempPtr->data > secondTempPtr->data)
+					{
+						ListNode<NODETYPE>* prevSecondTempPtr = secondTempPtr->prevPtr;
+						ListNode<NODETYPE>* nextSecondTempPtr = secondTempPtr->nextPtr;
+
+						ListNode<NODETYPE>* prevTempPtr = tempPtr->prevPtr;
+						ListNode<NODETYPE>* nextTempPtr = tempPtr->nextPtr;
+
+						prevSecondTempPtr->nextPtr = tempPtr; // bug
+						tempPtr->prevPtr = prevSecondTempPtr;
+						tempPtr->nextPtr = nextSecondTempPtr;
+						nextSecondTempPtr->prevPtr = tempPtr;
+
+						prevTempPtr->nextPtr = secondTempPtr;
+						secondTempPtr->prevPtr = prevTempPtr;
+						secondTempPtr->nextPtr = nextTempPtr;
+						nextTempPtr->prevPtr = secondTempPtr;
+						//tempPtr = secondCurrentPtr;
+
+						print();
+					}
+				}
+				
+				if (tempPtr->data > secondCurrentPtr->data)
+				{
+					ListNode<NODETYPE>* prevSecondCurrentPtr = secondCurrentPtr->prevPtr;
+					ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
+
+					prevSecondCurrentPtr->nextPtr = tempPtr;
+					tempPtr->prevPtr = prevSecondCurrentPtr;
+					tempPtr->nextPtr = nextSecondCurrentPtr;
+					nextSecondCurrentPtr->prevPtr = tempPtr;
+					tempPtr = secondCurrentPtr;
+
+					print();
+				}	
+			}
+		}
+	}
+	else
+	{
+		return;
 	}
 }
