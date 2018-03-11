@@ -421,77 +421,49 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 template <typename NODETYPE>
 void List<NODETYPE>::sort()
 {
-	ListNode<NODETYPE>* currentPtr = firstPtr;
-	
-	if (currentPtr != 0)
+	if (firstPtr != 0)
 	{
-		if (currentPtr->nextPtr == firstPtr)
+		if (firstPtr->nextPtr == firstPtr)
 		{
 			return;
 		}
 		else
 		{
-			for (; currentPtr->nextPtr != firstPtr; currentPtr = currentPtr->nextPtr)
+			bool sorted = true;
+
+			while (sorted)
 			{
+				sorted = false;
+				ListNode<NODETYPE>* currentPtr = firstPtr;
 				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
-				for (; secondCurrentPtr->nextPtr != firstPtr; secondCurrentPtr = secondCurrentPtr->nextPtr)
+
+				for (; secondCurrentPtr->nextPtr != firstPtr; currentPtr = currentPtr->nextPtr, secondCurrentPtr = secondCurrentPtr->nextPtr)
 				{
 					if (currentPtr->data > secondCurrentPtr->data)
 					{
-						if (currentPtr->nextPtr == secondCurrentPtr)
+						ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
+						ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
+
+						prevCurrentPtr->nextPtr = secondCurrentPtr;
+						secondCurrentPtr->prevPtr = prevCurrentPtr;
+						secondCurrentPtr->nextPtr = currentPtr;
+						currentPtr->prevPtr = secondCurrentPtr;
+						currentPtr->nextPtr = nextSecondCurrentPtr;
+						nextSecondCurrentPtr->prevPtr = currentPtr;
+
+						if (currentPtr == firstPtr)
 						{
-							ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
-							ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
-
-							prevCurrentPtr->nextPtr = secondCurrentPtr;
-							secondCurrentPtr->prevPtr = prevCurrentPtr;
-							secondCurrentPtr->nextPtr = currentPtr;
-							currentPtr->prevPtr = secondCurrentPtr;
-							currentPtr->nextPtr = nextSecondCurrentPtr;
-							nextSecondCurrentPtr->prevPtr = currentPtr;
-
-							if (currentPtr == firstPtr)
-							{
-								firstPtr->prevPtr = secondCurrentPtr;
-								firstPtr->nextPtr = nextSecondCurrentPtr;
-								firstPtr = secondCurrentPtr;
-							}
-
-							secondCurrentPtr = secondCurrentPtr->nextPtr;
+							firstPtr->prevPtr = secondCurrentPtr;
+							firstPtr->nextPtr = nextSecondCurrentPtr;
+							firstPtr = secondCurrentPtr;
 						}
-						else
-						{
-							ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
-							ListNode<NODETYPE>* nextCurrentPtr = currentPtr->nextPtr;
-							ListNode<NODETYPE>* prevSecondCurrentPtr = secondCurrentPtr->prevPtr;
-							ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
 
-							prevCurrentPtr->nextPtr = secondCurrentPtr;
-							secondCurrentPtr->prevPtr = prevCurrentPtr;
-							secondCurrentPtr->nextPtr = nextCurrentPtr;
-							nextCurrentPtr->prevPtr = secondCurrentPtr;
-
-							prevSecondCurrentPtr->nextPtr = currentPtr;
-							currentPtr->prevPtr = prevSecondCurrentPtr;
-							currentPtr->nextPtr = nextSecondCurrentPtr;
-							nextSecondCurrentPtr->prevPtr = currentPtr;
-
-							if (currentPtr == firstPtr)
-							{
-								firstPtr->prevPtr = secondCurrentPtr;
-								firstPtr->nextPtr = nextSecondCurrentPtr;
-								firstPtr = currentPtr;
-							}
-
-							ListNode<NODETYPE>* tempSecondCurrentPtr = secondCurrentPtr;
-							secondCurrentPtr = currentPtr;
-							currentPtr = tempSecondCurrentPtr;
-							secondCurrentPtr = currentPtr->nextPtr;
-						}
+						currentPtr = currentPtr->prevPtr;
+						secondCurrentPtr = secondCurrentPtr->nextPtr;
+						sorted = true;
 					}
 				}
-
-				if (secondCurrentPtr->data < currentPtr->data)
+				if (currentPtr->data > secondCurrentPtr->data)
 				{
 					ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
 					ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
@@ -510,8 +482,9 @@ void List<NODETYPE>::sort()
 						firstPtr = secondCurrentPtr;
 					}
 
+					currentPtr = currentPtr->prevPtr;
 					secondCurrentPtr = secondCurrentPtr->nextPtr;
-
+					sorted = true;
 				}
 			}
 		}
