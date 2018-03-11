@@ -432,49 +432,87 @@ void List<NODETYPE>::sort()
 		else
 		{
 			for (; currentPtr->nextPtr != firstPtr; currentPtr = currentPtr->nextPtr)
-			{		
-				ListNode<NODETYPE>* tempPtr = currentPtr;
+			{
 				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
 				for (; secondCurrentPtr->nextPtr != firstPtr; secondCurrentPtr = secondCurrentPtr->nextPtr)
 				{
-					ListNode<NODETYPE>* secondTempPtr = secondCurrentPtr;
-
-					if (tempPtr->data > secondTempPtr->data)
+					if (currentPtr->data > secondCurrentPtr->data)
 					{
-						ListNode<NODETYPE>* prevSecondTempPtr = secondTempPtr->prevPtr;
-						ListNode<NODETYPE>* nextSecondTempPtr = secondTempPtr->nextPtr;
+						if (currentPtr->nextPtr == secondCurrentPtr)
+						{
+							ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
+							ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
 
-						ListNode<NODETYPE>* prevTempPtr = tempPtr->prevPtr;
-						ListNode<NODETYPE>* nextTempPtr = tempPtr->nextPtr;
+							prevCurrentPtr->nextPtr = secondCurrentPtr;
+							secondCurrentPtr->prevPtr = prevCurrentPtr;
+							secondCurrentPtr->nextPtr = currentPtr;
+							currentPtr->prevPtr = secondCurrentPtr;
+							currentPtr->nextPtr = nextSecondCurrentPtr;
+							nextSecondCurrentPtr->prevPtr = currentPtr;
 
-						prevSecondTempPtr->nextPtr = tempPtr; // bug
-						tempPtr->prevPtr = prevSecondTempPtr;
-						tempPtr->nextPtr = nextSecondTempPtr;
-						nextSecondTempPtr->prevPtr = tempPtr;
+							if (currentPtr == firstPtr)
+							{
+								firstPtr->prevPtr = secondCurrentPtr;
+								firstPtr->nextPtr = nextSecondCurrentPtr;
+								firstPtr = secondCurrentPtr;
+							}
 
-						prevTempPtr->nextPtr = secondTempPtr;
-						secondTempPtr->prevPtr = prevTempPtr;
-						secondTempPtr->nextPtr = nextTempPtr;
-						nextTempPtr->prevPtr = secondTempPtr;
-						//tempPtr = secondCurrentPtr;
+							secondCurrentPtr = secondCurrentPtr->nextPtr;
+						}
+						else
+						{
+							ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
+							ListNode<NODETYPE>* nextCurrentPtr = currentPtr->nextPtr;
+							ListNode<NODETYPE>* prevSecondCurrentPtr = secondCurrentPtr->prevPtr;
+							ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
 
-						print();
+							prevCurrentPtr->nextPtr = secondCurrentPtr;
+							secondCurrentPtr->prevPtr = prevCurrentPtr;
+							secondCurrentPtr->nextPtr = nextCurrentPtr;
+							nextCurrentPtr->prevPtr = secondCurrentPtr;
+
+							prevSecondCurrentPtr->nextPtr = currentPtr;
+							currentPtr->prevPtr = prevSecondCurrentPtr;
+							currentPtr->nextPtr = nextSecondCurrentPtr;
+							nextSecondCurrentPtr->prevPtr = currentPtr;
+
+							if (currentPtr == firstPtr)
+							{
+								firstPtr->prevPtr = secondCurrentPtr;
+								firstPtr->nextPtr = nextSecondCurrentPtr;
+								firstPtr = currentPtr;
+							}
+
+							ListNode<NODETYPE>* tempSecondCurrentPtr = secondCurrentPtr;
+							secondCurrentPtr = currentPtr;
+							currentPtr = tempSecondCurrentPtr;
+							secondCurrentPtr = currentPtr->nextPtr;
+						}
 					}
 				}
-				
-				if (tempPtr->data > secondCurrentPtr->data)
+
+				if (secondCurrentPtr->data < currentPtr->data)
 				{
-					ListNode<NODETYPE>* prevSecondCurrentPtr = secondCurrentPtr->prevPtr;
+					ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
 					ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
 
-					prevSecondCurrentPtr->nextPtr = tempPtr;
-					tempPtr->prevPtr = prevSecondCurrentPtr;
-					tempPtr->nextPtr = nextSecondCurrentPtr;
-					nextSecondCurrentPtr->prevPtr = tempPtr;
-					tempPtr = secondCurrentPtr;
+					prevCurrentPtr->nextPtr = secondCurrentPtr;
+					secondCurrentPtr->prevPtr = prevCurrentPtr;
+					secondCurrentPtr->nextPtr = currentPtr;
+					currentPtr->prevPtr = secondCurrentPtr;
+					currentPtr->nextPtr = nextSecondCurrentPtr;
+					nextSecondCurrentPtr->prevPtr = currentPtr;
 
-					print();
-				}	
+					if (currentPtr == firstPtr)
+					{
+						firstPtr->prevPtr = secondCurrentPtr;
+						firstPtr->nextPtr = nextSecondCurrentPtr;
+						firstPtr = secondCurrentPtr;
+					}
+
+					secondCurrentPtr = secondCurrentPtr->nextPtr;
+
+				}
 			}
 		}
 	}
