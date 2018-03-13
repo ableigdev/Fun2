@@ -152,12 +152,11 @@ void List<NODETYPE>::print() const
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 
-		while (currentPtr->nextPtr != firstPtr)
+		do
 		{
 			std::cout << currentPtr->data << ' ';
 			currentPtr = currentPtr->nextPtr;
-		}
-		std::cout << currentPtr->data;
+		} while (currentPtr != firstPtr);
 	}
 	std::cout << std::endl;
 }
@@ -213,7 +212,6 @@ void List<NODETYPE>::pushInSortList(const NODETYPE& value)
 		pushFront(value);
 	}
 	else if (value >= firstPtr->prevPtr->data)
-		
 	{
 		pushBack(value);
 	}
@@ -298,37 +296,16 @@ bool List<NODETYPE>::findValue(const NODETYPE& value)
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 
-		if (currentPtr->data == value)
+		do
 		{
-			return true;
-		}
-		else
-		{
-			while (currentPtr->nextPtr != firstPtr)
-			{
-				if (currentPtr->data == value)
-				{
-					return true;
-				}
-				currentPtr = currentPtr->nextPtr;
-			}
-			return currentPtr->data == value;
-			/*
-			if (currentPtr->data == value)
+			if (value == currentPtr->data)
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
-			*/
-		}
+			currentPtr = currentPtr->nextPtr;
+		} while (currentPtr != firstPtr);
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 template <typename NODETYPE>
