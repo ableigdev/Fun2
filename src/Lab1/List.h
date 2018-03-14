@@ -50,7 +50,8 @@ private:
 	ListNode<NODETYPE>* currentNodePtr;
 
 private:
-	void copyList(const ListNode<NODETYPE>*);
+	void copyList(ListNode<NODETYPE>*);
+	void deleteRemaindList(ListNode<NODETYPE>*);
 };
 
 template <typename NODETYPE>
@@ -64,16 +65,13 @@ List<NODETYPE>::List()
 template <typename NODETYPE>
 List<NODETYPE>::List(const List<NODETYPE>& rList)
 {
+	firstPtr = 0;
+	currentNodePtr = 0;
+
 	if (!rList)
 	{
-		copyList(rList.firstPtr);
+		*this = rList;
 	}
-	else
-	{
-		firstPtr = 0;
-		currentNodePtr = 0;
-	}
-	
 }
 
 template <typename NODETYPE>
@@ -87,7 +85,6 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 {
 	if (this != &rList)
 	{
-		deleteAllElements();
 		copyList(rList.firstPtr);
 	}
 
@@ -133,16 +130,54 @@ void List<NODETYPE>::setCurrentNodeOnTheBegin()
 }
 
 template <typename NODETYPE>
-void List<NODETYPE>::copyList(const ListNode<NODETYPE>* rightPtr)
+void List<NODETYPE>::copyList(ListNode<NODETYPE>* rightPtr)
 {
-	const ListNode<NODETYPE>* currentRightPtr = rightPtr;
-	
-	while (currentRightPtr->nextPtr != rightPtr)
+	if (rightPtr != 0)
 	{
-		pushBack(currentRightPtr->data);
-		currentRightPtr = currentRightPtr->nextPtr;
+		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
+		ListNode<NODETYPE>* currentRightPtr = rightPtr;
+		int counter = 0;
+
+		do
+		{
+			if (currentFirstPtr == 0 || counter != 0 && currentFirstPtr == firstPtr)
+			{
+				pushBack(currentRightPtr->data);
+			}
+			else
+			{
+				currentFirstPtr->data = currentRightPtr->data;
+				currentFirstPtr = currentFirstPtr->nextPtr;
+				++counter;
+			}
+			
+			currentRightPtr = currentRightPtr->nextPtr;
+			
+		} while (currentRightPtr != rightPtr);
+
+		if (currentFirstPtr != firstPtr)
+		{
+			deleteRemaindList(currentFirstPtr);
+		}
 	}
-	pushBack(currentRightPtr->data);
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::deleteRemaindList(ListNode<NODETYPE>* ptr)
+{
+	if (ptr != 0)
+	{
+		ListNode<NODETYPE>* tempPtr = 0;
+		do
+		{
+			ptr->prevPtr->nextPtr = ptr->nextPtr;
+			ptr->nextPtr->prevPtr = ptr->prevPtr;
+
+			tempPtr = ptr;
+			ptr = ptr->nextPtr;
+			delete tempPtr;
+		} while (ptr != firstPtr);
+	}
 }
 
 template <typename NODETYPE>
