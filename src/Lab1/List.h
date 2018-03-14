@@ -31,8 +31,8 @@ public:
 
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
-	NODETYPE& operator++();
-	NODETYPE& operator--();
+	List<NODETYPE>& operator++();
+	List<NODETYPE>& operator--();
 
 	const NODETYPE& getReferencesCurrentData() const;
 	NODETYPE getValueCurrentData() const;
@@ -98,23 +98,39 @@ bool List<NODETYPE>::operator!() const
 }
 
 template <typename NODETYPE>
-NODETYPE& List<NODETYPE>::operator++()
+List<NODETYPE>& List<NODETYPE>::operator++()
 {
 	if (currentNodePtr == 0)
 		throw ReadAccessViolation();
 	
 	currentNodePtr = currentNodePtr->nextPtr;
-	return currentNodePtr->data;
+
+	if (currentNodePtr == firstPtr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return *this;
+	}
 }
 
 template <typename NODETYPE>
-NODETYPE& List<NODETYPE>::operator--()
+List<NODETYPE>& List<NODETYPE>::operator--()
 {
 	if (currentNodePtr == 0)
 		throw ReadAccessViolation();
 	
 	currentNodePtr = currentNodePtr->prevPtr;
-	return currentNodePtr->data;
+
+	if (currentNodePtr == firstPtr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return *this;
+	}
 }
 
 template <typename NODETYPE>
