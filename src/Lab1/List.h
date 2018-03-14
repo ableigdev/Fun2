@@ -362,27 +362,19 @@ bool List<NODETYPE>::findValue(const NODETYPE& value)
 template <typename NODETYPE>
 const NODETYPE& List<NODETYPE>::getReferencesCurrentData() const
 {
-	if (currentNodePtr != nullptr)
-	{
-		return currentNodePtr->data;
-	}
-	else
-	{
-		return 0;
-	}
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+
+	return currentNodePtr->data;
 }
 
 template <typename NODETYPE>
 NODETYPE List<NODETYPE>::getValueCurrentData() const
 {
-	if (currentNodePtr != nullptr)
-	{
-		return currentNodePtr->data;
-	}
-	else
-	{
-		return 0;
-	}
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+	
+	return currentNodePtr->data;
 }
 
 template <typename NODETYPE>
