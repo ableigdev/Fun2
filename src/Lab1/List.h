@@ -18,6 +18,7 @@ public:
 	void pushInSortList(const NODETYPE&);
 
 	void setCurrentNodeOnTheBegin();
+	void setCurrentNodeOnTheEnd();
 
 	bool deleteElement(NODETYPE);
 	void deleteAllElements();
@@ -143,6 +144,12 @@ template <typename NODETYPE>
 void List<NODETYPE>::setCurrentNodeOnTheBegin()
 {
 	currentNodePtr = firstPtr;
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::setCurrentNodeOnTheEnd()
+{
+	currentNodePtr = firstPtr->prevPtr;
 }
 
 template <typename NODETYPE>
