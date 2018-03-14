@@ -20,10 +20,10 @@ public:
 	std::string getLastname() const;
 
 	void setBirthYear(int);
-	int getBirthYear() const;
+	short int getBirthYear() const;
 
 	void setAverageGrade(double);
-	double getAverageGrade() const;
+	float getAverageGrade() const;
 
 	const Student& operator=(const Student&);
 	bool operator==(const Student&) const;
@@ -43,6 +43,6 @@ private:
 	std::string m_Name {};
 	std::string m_Surname {};
 	std::string m_Lastname {};
-	int m_BirthYear;
-	double m_AverageGrade;
+	short int m_BirthYear;
+	float m_AverageGrade;
 };
