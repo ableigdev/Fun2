@@ -53,6 +53,10 @@ private:
 private:
 	void copyList(ListNode<NODETYPE>*);
 	void deleteRemaindList(ListNode<NODETYPE>*);
+
+	void mergeSort(ListNode<NODETYPE>**);
+	void findMid(ListNode<NODETYPE>*, ListNode<NODETYPE>**, ListNode<NODETYPE>**);
+	static ListNode<NODETYPE>* mergeList(ListNode<NODETYPE>*, ListNode<NODETYPE>*);
 };
 
 template <typename NODETYPE>
@@ -387,72 +391,80 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 template <typename NODETYPE>
 void List<NODETYPE>::sort()
 {
-	if (firstPtr != 0)
+	mergeSort(&firstPtr);
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::mergeSort(ListNode<NODETYPE>** head)
+{
+	ListNode<NODETYPE>* list1;
+	ListNode<NODETYPE>* list2;
+	ListNode<NODETYPE>* head = *firstPtr;
+
+	if ((head == 0) || (head->nextPtr == 0))
 	{
-		if (firstPtr->nextPtr == firstPtr)
-		{
-			return;
-		}
-		else
-		{
-			bool sorted = true;
+		return;
+	}
 
-			while (sorted)
+
+	findMid(head, &list1, &list2);
+
+	mergeSort(&list1);
+	mergeSort(&list2);
+
+	*root = mergeList(list1, list2);
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::findMid(ListNode<NODETYPE>* root, ListNode<NODETYPE>** list1, ListNode<NODETYPE>** list2)
+{
+
+	ListNode<NODETYPE>* slow;
+	ListNode<NODETYPE>* fast;
+
+	if ((root == 0) || (root->nextPtr == 0))
+	{
+		*list1 = root;
+		*list2 = 0;
+		return;
+	}
+	else
+	{
+
+		slow = root;
+		fast = root->nextPtr;
+		while (fast != 0)
+		{
+			fast = fast->nextPtr;
+			if (fast != 0)
 			{
-				sorted = false;
-				ListNode<NODETYPE>* currentPtr = firstPtr;
-				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
-
-				for (; secondCurrentPtr->nextPtr != firstPtr; currentPtr = currentPtr->nextPtr, secondCurrentPtr = secondCurrentPtr->nextPtr)
-				{
-					if (currentPtr->data > secondCurrentPtr->data)
-					{
-						ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
-						ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
-
-						prevCurrentPtr->nextPtr = secondCurrentPtr;
-						secondCurrentPtr->prevPtr = prevCurrentPtr;
-						secondCurrentPtr->nextPtr = currentPtr;
-						currentPtr->prevPtr = secondCurrentPtr;
-						currentPtr->nextPtr = nextSecondCurrentPtr;
-						nextSecondCurrentPtr->prevPtr = currentPtr;
-
-						if (currentPtr == firstPtr)
-						{
-							firstPtr->prevPtr = secondCurrentPtr;
-							firstPtr->nextPtr = nextSecondCurrentPtr;
-							firstPtr = secondCurrentPtr;
-						}
-
-						currentPtr = currentPtr->prevPtr;
-						secondCurrentPtr = secondCurrentPtr->nextPtr;
-						sorted = true;
-					}
-				}
-				if (currentPtr->data > secondCurrentPtr->data)
-				{
-					ListNode<NODETYPE>* prevCurrentPtr = currentPtr->prevPtr;
-					ListNode<NODETYPE>* nextSecondCurrentPtr = secondCurrentPtr->nextPtr;
-
-					prevCurrentPtr->nextPtr = secondCurrentPtr;
-					secondCurrentPtr->prevPtr = prevCurrentPtr;
-					secondCurrentPtr->nextPtr = currentPtr;
-					currentPtr->prevPtr = secondCurrentPtr;
-					currentPtr->nextPtr = nextSecondCurrentPtr;
-					nextSecondCurrentPtr->prevPtr = currentPtr;
-
-					if (currentPtr == firstPtr)
-					{
-						firstPtr->prevPtr = secondCurrentPtr;
-						firstPtr->nextPtr = nextSecondCurrentPtr;
-						firstPtr = secondCurrentPtr;
-					}
-
-					currentPtr = currentPtr->prevPtr;
-					secondCurrentPtr = secondCurrentPtr->nextPtr;
-					sorted = true;
-				}
+				slow = slow->nextPtr;
+				fast = fast->nextPtr;
 			}
 		}
+
+
+		*list1 = root;
+		*list2 = slow->nextPtr;
+		slow->nextPtr = 0;
+
 	}
+
+}
+
+template <typename NODETYPE>
+static ListNode<NODETYPE>* List<NODETYPE>::mergeList(ListNode<NODETYPE>* list1, ListNode<NODETYPE>* list2)
+{
+	ListNode<NODETYPE>* dummy_head = { 0, 0 };
+	ListNode<NODETYPE>* tail = &dummy_head;
+
+	while ((list1 != 0) && (list2 != 0))
+	{
+		ListNode<NODETYPE>** min = (list1->data < list2->data) ? &list1 : &list2;
+		ListNode<NODETYPE>* next = (*min)->nextPtr;
+		tail = tail->nextPtr = *min;
+		*min = next;
+	}
+	tail->nextPtr = list1 ? list1 : list2;
+	return dummy_head->nextPtr;
 }
