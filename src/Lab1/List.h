@@ -49,11 +49,11 @@ private:
 						
 	ListNode<NODETYPE>* firstPtr;
 	ListNode<NODETYPE>* currentNodePtr;
-	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
 
 private:
 	void copyList(ListNode<NODETYPE>*);
 	void deleteRemaindList(ListNode<NODETYPE>*);
+	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
 };
 
 template <typename NODETYPE>
@@ -136,12 +136,10 @@ List<NODETYPE>& List<NODETYPE>::operator--()
 }
 
 template <typename NODETYPE>
-List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::getNewNode(const NODETYPE& value)
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::getNewNode(const NODETYPE& value)
 {
 	ListNode<NODETYPE> *newPtr = new ListNode<NODETYPE>;
 	newPtr->data = value;
-	newPtr->nextPtr = 0;
-	newPtr->prevPtr = 0;
 
 	return newPtr;
 }
