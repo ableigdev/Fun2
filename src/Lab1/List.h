@@ -458,7 +458,7 @@ void List<NODETYPE>::findMid(ListNode<NODETYPE>* root, ListNode<NODETYPE>** list
 }
 
 template <typename NODETYPE>
-static ListNode<NODETYPE>* List<NODETYPE>::mergeList(ListNode<NODETYPE>* list1, ListNode<NODETYPE>* list2)
+typename static List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeList(ListNode<NODETYPE>* list1, ListNode<NODETYPE>* list2)
 {
 	ListNode<NODETYPE>* dummy_head = { 0, 0 };
 	ListNode<NODETYPE>* tail = &dummy_head;
