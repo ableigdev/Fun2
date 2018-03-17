@@ -232,8 +232,7 @@ void List<NODETYPE>::print() const
 template <typename NODETYPE>
 void List<NODETYPE>::pushFront(const NODETYPE& value)
 {
-	ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
-	newPtr->data = value;
+	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
 	if (isEmpty())
 	{	
@@ -254,8 +253,7 @@ void List<NODETYPE>::pushFront(const NODETYPE& value)
 template <typename NODETYPE>
 void List<NODETYPE>::pushBack(const NODETYPE& value)
 {
-	ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
-	newPtr->data = value;
+	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
 	if (isEmpty())
 	{
@@ -285,9 +283,7 @@ void List<NODETYPE>::pushInSortList(const NODETYPE& value)
 	}
 	else
 	{
-		ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
-		newPtr->data = value;
-
+		ListNode<NODETYPE>* newPtr = getNewNode(value);
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 
 		do
