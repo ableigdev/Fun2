@@ -400,11 +400,11 @@ void List<NODETYPE>::sort()
 }
 
 template <typename NODETYPE>
-void List<NODETYPE>::mergeSort(ListNode<NODETYPE>** head)
+void List<NODETYPE>::mergeSort(ListNode<NODETYPE>** root)
 {
 	ListNode<NODETYPE>* list1;
 	ListNode<NODETYPE>* list2;
-	ListNode<NODETYPE>* head = *firstPtr;
+	ListNode<NODETYPE>* head = *root;
 
 	if ((head == 0) || (head->nextPtr == 0))
 	{
@@ -438,15 +438,15 @@ void List<NODETYPE>::findMid(ListNode<NODETYPE>* root, ListNode<NODETYPE>** list
 
 		slow = root;
 		fast = root->nextPtr;
-		while (fast != 0)
+		while (fast != firstPtr)
 		{
 			fast = fast->nextPtr;
-			if (fast != 0)
+			if (fast != firstPtr)
 			{
 				slow = slow->nextPtr;
 				fast = fast->nextPtr;
 			}
-		}
+		} 
 
 
 		*list1 = root;
@@ -458,10 +458,14 @@ void List<NODETYPE>::findMid(ListNode<NODETYPE>* root, ListNode<NODETYPE>** list
 }
 
 template <typename NODETYPE>
-typename static List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeList(ListNode<NODETYPE>* list1, ListNode<NODETYPE>* list2)
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeList(ListNode<NODETYPE>* list1, ListNode<NODETYPE>* list2)
 {
-	ListNode<NODETYPE>* dummy_head = { 0, 0 };
-	ListNode<NODETYPE>* tail = &dummy_head;
+	ListNode<NODETYPE> dummy_head;
+	dummy_head.data = 0;
+	dummy_head.nextPtr = 0;
+	dummy_head.prevPtr = 0;
+	
+	List<NODETYPE>::ListNode<NODETYPE>* tail = &dummy_head;
 
 	while ((list1 != 0) && (list2 != 0))
 	{
@@ -471,5 +475,5 @@ typename static List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeList(Li
 		*min = next;
 	}
 	tail->nextPtr = list1 ? list1 : list2;
-	return dummy_head->nextPtr;
+	return dummy_head.nextPtr;
 }
