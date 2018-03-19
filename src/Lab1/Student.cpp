@@ -57,7 +57,7 @@ void Student::setBirthYear(int year)
 	m_BirthYear = year;
 }
 
-int Student::getBirthYear() const
+short int Student::getBirthYear() const
 {
 	return m_BirthYear;
 }
@@ -67,7 +67,7 @@ void Student::setAverageGrade(double averageGrade)
 	m_AverageGrade = averageGrade;
 }
 
-double Student::getAverageGrade() const
+float Student::getAverageGrade() const
 {
 	return m_AverageGrade;
 }
@@ -112,14 +112,12 @@ bool Student::operator!=(const Student& right) const
 
 bool Student::operator>=(const Student& right) const
 {
-	int result = compareStudents(right);
-	return  result == 0 || result == 1;
+	return compareStudents(right) != -1;
 }
 
 bool Student::operator<=(const Student& right) const
 {
-	int result = compareStudents(right);
-	return  result == 0 || result == -1;
+	return compareStudents(right) != 1;
 }
 
 bool Student::operator>(const Student& right) const

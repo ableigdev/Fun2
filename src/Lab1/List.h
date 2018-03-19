@@ -18,19 +18,22 @@ public:
 	void pushInSortList(const NODETYPE&);
 
 	void setCurrentNodeOnTheBegin();
+	void setCurrentNodeOnTheEnd();
 
 	bool deleteElement(NODETYPE);
-	bool deleteAllElements();
+	void deleteAllElements();
 
 	bool findValue(const NODETYPE&);
 
 	bool isEmpty() const;
 	void print() const;
 
+	void sort();
+
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
-	NODETYPE& operator++();
-	NODETYPE& operator--();
+	List<NODETYPE>& operator++();
+	List<NODETYPE>& operator--();
 
 	const NODETYPE& getReferencesCurrentData() const;
 	NODETYPE getValueCurrentData() const;
@@ -46,15 +49,21 @@ private:
 						
 	ListNode<NODETYPE>* firstPtr;
 	ListNode<NODETYPE>* currentNodePtr;
+	size_t m_Size;
 
 private:
-	void copyList(const ListNode<NODETYPE>*);
+	void copyList(ListNode<NODETYPE>*);
+	void deleteRemaindList(ListNode<NODETYPE>*);
+	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
+	ListNode<NODETYPE>* fusion(ListNode<NODETYPE>*, size_t, ListNode<NODETYPE>*, size_t);
+	ListNode<NODETYPE>* mergeSort(ListNode<NODETYPE>*, size_t);
 };
 
 template <typename NODETYPE>
 List<NODETYPE>::List()
 	: firstPtr(0),
-	currentNodePtr(0)
+	currentNodePtr(0),
+	m_Size(0)
 {
 	
 }
@@ -62,25 +71,20 @@ List<NODETYPE>::List()
 template <typename NODETYPE>
 List<NODETYPE>::List(const List<NODETYPE>& rList)
 {
+	firstPtr = 0;
+	currentNodePtr = 0;
+	m_Size = rList.m_Size;
+
 	if (!rList)
 	{
-		copyList(rList.firstPtr);
+		*this = rList;
 	}
-	else
-	{
-		firstPtr = 0;
-		currentNodePtr = 0;
-	}
-	
 }
 
 template <typename NODETYPE>
 List<NODETYPE>::~List()
 {
-	if (!isEmpty())
-	{
-		deleteAllElements();
-	}
+	deleteAllElements();
 }
 
 template <typename NODETYPE>
@@ -88,7 +92,6 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 {
 	if (this != &rList)
 	{
-		deleteAllElements();
 		copyList(rList.firstPtr);
 	}
 
@@ -102,23 +105,48 @@ bool List<NODETYPE>::operator!() const
 }
 
 template <typename NODETYPE>
-NODETYPE& List<NODETYPE>::operator++()
+List<NODETYPE>& List<NODETYPE>::operator++()
 {
 	if (currentNodePtr == 0)
 		throw ReadAccessViolation();
 	
 	currentNodePtr = currentNodePtr->nextPtr;
-	return currentNodePtr->data;
+
+	if (currentNodePtr == firstPtr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return *this;
+	}
 }
 
 template <typename NODETYPE>
-NODETYPE& List<NODETYPE>::operator--()
+List<NODETYPE>& List<NODETYPE>::operator--()
 {
 	if (currentNodePtr == 0)
 		throw ReadAccessViolation();
 	
 	currentNodePtr = currentNodePtr->prevPtr;
-	return currentNodePtr->data;
+
+	if (currentNodePtr == firstPtr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return *this;
+	}
+}
+
+template <typename NODETYPE>
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::getNewNode(const NODETYPE& value)
+{
+	ListNode<NODETYPE> *newPtr = new ListNode<NODETYPE>;
+	newPtr->data = value;
+
+	return newPtr;
 }
 
 template <typename NODETYPE>
@@ -134,17 +162,62 @@ void List<NODETYPE>::setCurrentNodeOnTheBegin()
 }
 
 template <typename NODETYPE>
-void List<NODETYPE>::copyList(const ListNode<NODETYPE>* rightPtr)
+void List<NODETYPE>::setCurrentNodeOnTheEnd()
 {
-	const ListNode<NODETYPE>* currentRightPtr = rightPtr;
-	
-	while (currentRightPtr->nextPtr != rightPtr)
-	{
-		pushBack(currentRightPtr->data);
-		currentRightPtr = currentRightPtr->nextPtr;
-	}
-	pushBack(currentRightPtr->data);
+	currentNodePtr = firstPtr->prevPtr;
 }
+
+template <typename NODETYPE>
+void List<NODETYPE>::copyList(ListNode<NODETYPE>* rightPtr)
+{
+	if (rightPtr != 0)
+	{
+		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
+		ListNode<NODETYPE>* currentRightPtr = rightPtr;
+		int counter = 0;
+
+		do
+		{
+			if (currentFirstPtr == 0 || counter != 0 && currentFirstPtr == firstPtr)
+			{
+				pushBack(currentRightPtr->data);
+			}
+			else
+			{
+				currentFirstPtr->data = currentRightPtr->data;
+				currentFirstPtr = currentFirstPtr->nextPtr;
+				++counter;
+			}
+			
+			currentRightPtr = currentRightPtr->nextPtr;
+			
+		} while (currentRightPtr != rightPtr);
+
+		if (currentFirstPtr != firstPtr)
+		{
+			deleteRemaindList(currentFirstPtr);
+		}
+	}
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::deleteRemaindList(ListNode<NODETYPE>* ptr)
+{
+	if (ptr != 0)
+	{
+		ListNode<NODETYPE>* tempPtr = 0;
+		do
+		{
+			ptr->prevPtr->nextPtr = ptr->nextPtr;
+			ptr->nextPtr->prevPtr = ptr->prevPtr;
+
+			tempPtr = ptr;
+			ptr = ptr->nextPtr;
+			delete tempPtr;
+		} while (ptr != firstPtr);
+	}
+}
+
 template <typename NODETYPE>
 void List<NODETYPE>::print() const
 {
@@ -152,12 +225,11 @@ void List<NODETYPE>::print() const
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 
-		while (currentPtr->nextPtr != firstPtr)
+		do
 		{
 			std::cout << currentPtr->data << ' ';
 			currentPtr = currentPtr->nextPtr;
-		}
-		std::cout << currentPtr->data;
+		} while (currentPtr != firstPtr);
 	}
 	std::cout << std::endl;
 }
@@ -165,10 +237,7 @@ void List<NODETYPE>::print() const
 template <typename NODETYPE>
 void List<NODETYPE>::pushFront(const NODETYPE& value)
 {
-	ListNode<NODETYPE> *newPtr = new ListNode<NODETYPE>;
-	newPtr->data = value;
-	newPtr->nextPtr = 0;
-	newPtr->prevPtr = 0;
+	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
 	if (isEmpty())
 	{	
@@ -184,15 +253,13 @@ void List<NODETYPE>::pushFront(const NODETYPE& value)
 		firstPtr = newPtr;
 	}
 	currentNodePtr = firstPtr;
+	++m_Size;
 }
 
 template <typename NODETYPE>
 void List<NODETYPE>::pushBack(const NODETYPE& value)
 {
-	ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
-	newPtr->data = value;
-	newPtr->nextPtr = 0;
-	newPtr->prevPtr = 0;
+	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
 	if (isEmpty())
 	{
@@ -207,48 +274,27 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 		tempPtr->nextPtr = newPtr;
 	}
 	currentNodePtr = firstPtr;
+	++m_Size;
 }
 
 template <typename NODETYPE>
 void List<NODETYPE>::pushInSortList(const NODETYPE& value)
 {
-	if (isEmpty())
+	if (isEmpty() || value <= firstPtr->data)
 	{
 		pushFront(value);
 	}
+	else if (value >= firstPtr->prevPtr->data)
+	{
+		pushBack(value);
+	}
 	else
 	{
-		if (value <= firstPtr->data)
-		{
-			pushFront(value);
-		}
-		else if (value >= firstPtr->prevPtr->data)
-		{
-			pushBack(value);
-		}
-		else
-		{
+		ListNode<NODETYPE>* newPtr = getNewNode(value);
+		ListNode<NODETYPE>* currentPtr = firstPtr;
 
-			ListNode<NODETYPE>* newPtr = new ListNode<NODETYPE>;
-			newPtr->data = value;
-			newPtr->nextPtr = 0;
-			newPtr->prevPtr = 0;
-
-			ListNode<NODETYPE>* currentPtr = firstPtr;
-
-			while (currentPtr->nextPtr != firstPtr)
-			{
-				if (newPtr->data <= currentPtr->data)
-				{
-					ListNode<NODETYPE>* tempPtr = currentPtr->prevPtr;
-					tempPtr->nextPtr = newPtr;
-					newPtr->prevPtr = tempPtr;
-					newPtr->nextPtr = currentPtr;
-					currentPtr->prevPtr = newPtr;
-					return;
-				}
-				currentPtr = currentPtr->nextPtr;
-			}
+		do
+		{
 			if (newPtr->data <= currentPtr->data)
 			{
 				ListNode<NODETYPE>* tempPtr = currentPtr->prevPtr;
@@ -256,8 +302,11 @@ void List<NODETYPE>::pushInSortList(const NODETYPE& value)
 				newPtr->prevPtr = tempPtr;
 				newPtr->nextPtr = currentPtr;
 				currentPtr->prevPtr = newPtr;
+				++m_Size;
+				return;
 			}
-		}
+			currentPtr = currentPtr->nextPtr;
+		} while (currentPtr != firstPtr);
 	}
 }
 
@@ -269,41 +318,8 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 		ListNode<NODETYPE>* tempPtr = 0;
 
-		if (currentPtr->data == value)
+		do
 		{
-			ListNode<NODETYPE>* prevTempPtr = currentPtr->prevPtr;
-			ListNode<NODETYPE>* nextTempPtr = currentPtr->nextPtr;
-			tempPtr = currentPtr;
-
-			prevTempPtr->nextPtr = nextTempPtr;
-			nextTempPtr->prevPtr = prevTempPtr;
-
-			firstPtr = nextTempPtr;
-
-			delete tempPtr;
-
-			return true;
-		}
-		else
-		{
-			while (currentPtr->nextPtr != firstPtr)
-			{
-				if (currentPtr->data == value)
-				{
-					ListNode<NODETYPE>* prevTempPtr = currentPtr->prevPtr;
-					ListNode<NODETYPE>* nextTempPtr = currentPtr->nextPtr;
-					tempPtr = currentPtr;
-
-					prevTempPtr->nextPtr = nextTempPtr;
-					nextTempPtr->prevPtr = prevTempPtr;
-
-					delete tempPtr;
-
-					return true;
-				}
-				currentPtr = currentPtr->nextPtr;
-			}
-
 			if (currentPtr->data == value)
 			{
 				ListNode<NODETYPE>* prevTempPtr = currentPtr->prevPtr;
@@ -315,41 +331,34 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 
 				delete tempPtr;
 
+				if (currentPtr == firstPtr)
+				{
+					firstPtr = nextTempPtr;
+				}
+				--m_Size;
 				return true;
 			}
-			return false;
-		}
-		
+			currentPtr = currentPtr->nextPtr;
+		} while (currentPtr != firstPtr);
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 template <typename NODETYPE>
-bool List<NODETYPE>::deleteAllElements()
+void List<NODETYPE>::deleteAllElements()
 {
 	if (!isEmpty())
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 		ListNode<NODETYPE>* tempPtr;
 
-		while (currentPtr->nextPtr != firstPtr)
+		do
 		{
 			tempPtr = currentPtr;
 			currentPtr = currentPtr->nextPtr;
 			delete tempPtr;
-		}
-
-		if (currentPtr != 0)
-			delete currentPtr;
-
-		return true;
-	}
-	else
-	{
-		return false;
+			--m_Size;
+		} while (currentPtr != firstPtr);
 	}
 }
 
@@ -360,58 +369,145 @@ bool List<NODETYPE>::findValue(const NODETYPE& value)
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
 
-		if (currentPtr->data == value)
+		do
 		{
-			return true;
-		}
-		else
-		{
-			while (currentPtr->nextPtr != firstPtr)
-			{
-				if (currentPtr->data == value)
-				{
-					return true;
-				}
-				currentPtr = currentPtr->nextPtr;
-			}
-			if (currentPtr->data == value)
+			if (value == currentPtr->data)
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
-		}
+			currentPtr = currentPtr->nextPtr;
+		} while (currentPtr != firstPtr);
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 template <typename NODETYPE>
 const NODETYPE& List<NODETYPE>::getReferencesCurrentData() const
 {
-	if (currentNodePtr != nullptr)
-	{
-		return currentNodePtr->data;
-	}
-	else
-	{
-		return 0;
-	}
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+
+	return currentNodePtr->data;
 }
 
 template <typename NODETYPE>
 NODETYPE List<NODETYPE>::getValueCurrentData() const
 {
-	if (currentNodePtr != nullptr)
+	if (currentNodePtr == 0)
+		throw ReadAccessViolation();
+	
+	return currentNodePtr->data;
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::sort()
+{
+	mergeSort(firstPtr, m_Size);
+}
+
+template <typename NODETYPE>
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NODETYPE>* leftListPtr, size_t leftListSize, ListNode<NODETYPE>* rightListPtr, size_t rightListSize)
+{
+	ListNode<NODETYPE>* currentPtr = 0;
+	ListNode<NODETYPE>* tempPtr;
+
+	while (leftListSize > 0 && rightListSize > 0)
 	{
-		return currentNodePtr->data;
+		if (leftListPtr->data <= rightListPtr->data)
+		{
+			/* select element from leftListPtr list */
+			tempPtr = leftListPtr;
+			leftListPtr = leftListPtr->nextPtr;
+			--leftListSize;
+		}
+		else 
+		{
+			/* select element from rightListPtr list */
+			tempPtr = rightListPtr;
+			rightListPtr = rightListPtr->nextPtr;
+			--rightListSize;
+		}
+		/* detach tempPtr */
+		tempPtr->prevPtr->nextPtr = tempPtr->nextPtr;
+		tempPtr->nextPtr->prevPtr = tempPtr->prevPtr;
+		tempPtr->nextPtr = tempPtr->prevPtr = tempPtr;
+		
+		if (currentPtr == 0)
+		{
+			currentPtr = tempPtr;
+		}
+		else 
+		{
+			/* insert tempPtr after currentPtr */
+			tempPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = tempPtr;
+			currentPtr->prevPtr = tempPtr;
+		}
 	}
-	else
+
+	if (leftListSize > 0)
 	{
-		return 0;
+		/* insert leftListPtr at the end of currentPtr */
+		if (currentPtr == 0)
+		{
+			currentPtr = leftListPtr;
+		}
+		else 
+		{
+			/* insert leftListPtr after currentPtr */
+			tempPtr = leftListPtr->prevPtr; /* end element of leftListPtr */
+			leftListPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = leftListPtr;
+			currentPtr->prevPtr = tempPtr;
+		}
 	}
+
+	if (rightListSize > 0)
+	{
+		/* insert rightListPtr at the end of currentPtr */
+		if (currentPtr == 0)
+		{
+			currentPtr = rightListPtr;
+		}
+		else 
+		{
+			/* insert rightListPtr after currentPtr */
+			tempPtr = rightListPtr->prevPtr; /* end element of leftListPtr */
+			rightListPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = rightListPtr;
+			currentPtr->prevPtr = tempPtr;
+		}
+	}
+
+	firstPtr = currentPtr;
+	return currentPtr;
+}
+
+template <typename NODETYPE>
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<NODETYPE>* rootPtr, size_t sizeList)
+{
+	ListNode<NODETYPE>* leftListPtr;
+	ListNode<NODETYPE>* rightListPtr;
+
+	size_t leftListSize;
+	size_t rightListSize;
+
+	if (sizeList < 2)
+	{
+		return rootPtr;
+	}
+
+	/* split p in 2 halves: p[0..P] and q[0..Q] */
+	for (rightListPtr = leftListPtr = rootPtr, leftListSize = 0, rightListSize = sizeList; leftListSize < rightListSize; ++leftListSize, --rightListSize)
+	{
+		rightListPtr = rightListPtr->nextPtr;
+	}
+
+	leftListPtr = mergeSort(leftListPtr, leftListSize);
+	rightListPtr = mergeSort(rightListPtr, rightListSize);
+	rootPtr = fusion(leftListPtr, leftListSize, rightListPtr, rightListSize);
+	return rootPtr;
 }
