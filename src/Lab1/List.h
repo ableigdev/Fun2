@@ -55,8 +55,8 @@ private:
 	void copyList(ListNode<NODETYPE>*);
 	void deleteRemaindList(ListNode<NODETYPE>*);
 	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
-	ListNode<NODETYPE>* fusion(ListNode<NODETYPE>*, NODETYPE, ListNode<NODETYPE>*, NODETYPE);
-	ListNode<NODETYPE>* merge_sort(ListNode<NODETYPE>*, NODETYPE);
+	ListNode<NODETYPE>* fusion(ListNode<NODETYPE>*, size_t, ListNode<NODETYPE>*, size_t);
+	ListNode<NODETYPE>* mergeSort(ListNode<NODETYPE>*, size_t);
 };
 
 template <typename NODETYPE>
@@ -402,106 +402,112 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 template <typename NODETYPE>
 void List<NODETYPE>::sort()
 {
-	merge_sort(firstPtr, m_Size);
+	mergeSort(firstPtr, m_Size);
 }
 
 template <typename NODETYPE>
-typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NODETYPE>* p, NODETYPE P, ListNode<NODETYPE>* q, NODETYPE Q)
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NODETYPE>* leftListPtr, size_t leftListSize, ListNode<NODETYPE>* rightListPtr, size_t rightListSize)
 {
-	ListNode<NODETYPE>* s;
-	ListNode<NODETYPE>* e;
+	ListNode<NODETYPE>* currentPtr = 0;
+	ListNode<NODETYPE>* tempPtr;
 
-	s = NULL;
-	while (P > 0 && Q > 0) {
-		if (p->data <= q->data) 
-		{
-			/* select element from p list */
-			e = p;
-			p = p->nextPtr;
-			P--;
-		}
-		else 
-		{
-			/* select element from q list */
-			e = q;
-			q = q->nextPtr;
-			Q--;
-		}
-		/* detach e */
-		e->prevPtr->nextPtr = e->nextPtr;
-		e->nextPtr->prevPtr = e->prevPtr;
-		e->nextPtr = e->prevPtr = e;
-		if (s == NULL) 
-		{
-			s = e;
-		}
-		else 
-		{
-			/* insert e after s */
-			e->prevPtr = s->prevPtr;
-			e->nextPtr = s;
-			s->prevPtr->nextPtr = e;
-			s->prevPtr = e;
-		}
-	}
-	if (P > 0) 
+	while (leftListSize > 0 && rightListSize > 0)
 	{
-		/* insert p at the end of s */
-		if (s == NULL) {
-			s = p;
+		if (leftListPtr->data <= rightListPtr->data)
+		{
+			/* select element from leftListPtr list */
+			tempPtr = leftListPtr;
+			leftListPtr = leftListPtr->nextPtr;
+			--leftListSize;
 		}
 		else 
 		{
-			/* insert p after s */
-			e = p->prevPtr; /* end element of p */
-			p->prevPtr = s->prevPtr;
-			e->nextPtr = s;
-			s->prevPtr->nextPtr = p;
-			s->prevPtr = e;
+			/* select element from rightListPtr list */
+			tempPtr = rightListPtr;
+			rightListPtr = rightListPtr->nextPtr;
+			--rightListSize;
+		}
+		/* detach tempPtr */
+		tempPtr->prevPtr->nextPtr = tempPtr->nextPtr;
+		tempPtr->nextPtr->prevPtr = tempPtr->prevPtr;
+		tempPtr->nextPtr = tempPtr->prevPtr = tempPtr;
+		
+		if (currentPtr == 0)
+		{
+			currentPtr = tempPtr;
+		}
+		else 
+		{
+			/* insert tempPtr after currentPtr */
+			tempPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = tempPtr;
+			currentPtr->prevPtr = tempPtr;
 		}
 	}
-	if (Q > 0) 
+
+	if (leftListSize > 0)
 	{
-		/* insert q at the end of s */
-		if (s == NULL) 
+		/* insert leftListPtr at the end of currentPtr */
+		if (currentPtr == 0)
 		{
-			s = q;
+			currentPtr = leftListPtr;
 		}
 		else 
 		{
-			/* insert q after s */
-			e = q->prevPtr; /* end element of p */
-			q->prevPtr = s->prevPtr;
-			e->nextPtr = s;
-			s->prevPtr->nextPtr = q;
-			s->prevPtr = e;
+			/* insert leftListPtr after currentPtr */
+			tempPtr = leftListPtr->prevPtr; /* end element of leftListPtr */
+			leftListPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = leftListPtr;
+			currentPtr->prevPtr = tempPtr;
 		}
 	}
-	return s;
+
+	if (rightListSize > 0)
+	{
+		/* insert rightListPtr at the end of currentPtr */
+		if (currentPtr == 0)
+		{
+			currentPtr = rightListPtr;
+		}
+		else 
+		{
+			/* insert rightListPtr after currentPtr */
+			tempPtr = rightListPtr->prevPtr; /* end element of leftListPtr */
+			rightListPtr->prevPtr = currentPtr->prevPtr;
+			tempPtr->nextPtr = currentPtr;
+			currentPtr->prevPtr->nextPtr = rightListPtr;
+			currentPtr->prevPtr = tempPtr;
+		}
+	}
+
+	firstPtr = currentPtr;
+	return currentPtr;
 }
 
 template <typename NODETYPE>
-typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::merge_sort(ListNode<NODETYPE>* s, NODETYPE S)
+typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<NODETYPE>* rootPtr, size_t sizeList)
 {
-	ListNode<NODETYPE>* p;
-	ListNode<NODETYPE>* q;
+	ListNode<NODETYPE>* leftListPtr;
+	ListNode<NODETYPE>* rightListPtr;
 
-	int P;
-	int Q;
+	size_t leftListSize;
+	size_t rightListSize;
 
-	if (S < 2)
+	if (sizeList < 2)
 	{
-		return s;
+		return rootPtr;
 	}
 
 	/* split p in 2 halves: p[0..P] and q[0..Q] */
-	for (q = p = s, P = 0, Q = S; P < Q; P++, Q--) 
+	for (rightListPtr = leftListPtr = rootPtr, leftListSize = 0, rightListSize = sizeList; leftListSize < rightListSize; ++leftListSize, --rightListSize)
 	{
-		q = q->nextPtr;
+		rightListPtr = rightListPtr->nextPtr;
 	}
 
-	p = merge_sort(p, P);
-	q = merge_sort(q, Q);
-	s = fusion(p, P, q, Q);
-	return s;
+	leftListPtr = mergeSort(leftListPtr, leftListSize);
+	rightListPtr = mergeSort(rightListPtr, rightListSize);
+	rootPtr = fusion(leftListPtr, leftListSize, rightListPtr, rightListSize);
+	return rootPtr;
 }
