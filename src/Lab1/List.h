@@ -11,7 +11,7 @@ class List
 public:
 	List(); 
 	List(const List<NODETYPE>&);
-	~List();
+	virtual ~List();
 
 	void pushFront(const NODETYPE&);
 	void pushBack(const NODETYPE&);
