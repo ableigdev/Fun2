@@ -26,6 +26,7 @@ public:
 	bool findValue(const NODETYPE&);
 
 	bool isEmpty() const;
+	size_t getSize() const;
 	void print() const;
 
 	void sort();
@@ -37,6 +38,9 @@ public:
 
 	const NODETYPE& getReferencesCurrentData() const;
 	NODETYPE getValueCurrentData() const;
+
+	template <typename NODETYPE>
+	friend std::ostream& operator<<(std::ostream&, const List<NODETYPE>&);
 
 private:
 	template <typename NODETYPE>
@@ -73,7 +77,7 @@ List<NODETYPE>::List(const List<NODETYPE>& rList)
 {
 	firstPtr = 0;
 	currentNodePtr = 0;
-	m_Size = rList.m_Size;
+	m_Size = 0;
 
 	if (!rList)
 	{
@@ -112,14 +116,7 @@ List<NODETYPE>& List<NODETYPE>::operator++()
 	
 	currentNodePtr = currentNodePtr->nextPtr;
 
-	if (currentNodePtr == firstPtr)
-	{
-		return nullptr;
-	}
-	else
-	{
-		return *this;
-	}
+	return *this;
 }
 
 template <typename NODETYPE>
@@ -130,14 +127,7 @@ List<NODETYPE>& List<NODETYPE>::operator--()
 	
 	currentNodePtr = currentNodePtr->prevPtr;
 
-	if (currentNodePtr == firstPtr)
-	{
-		return nullptr;
-	}
-	else
-	{
-		return *this;
-	}
+	return *this;
 }
 
 template <typename NODETYPE>
@@ -153,6 +143,12 @@ template <typename NODETYPE>
 bool List<NODETYPE>::isEmpty() const
 {
 	return firstPtr == 0;
+}
+
+template <typename NODETYPE>
+size_t List<NODETYPE>::getSize() const
+{
+	return m_Size;
 }
 
 template <typename NODETYPE>
@@ -510,4 +506,16 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<
 	rightListPtr = mergeSort(rightListPtr, rightListSize);
 	rootPtr = fusion(leftListPtr, leftListSize, rightListPtr, rightListSize);
 	return rootPtr;
+}
+
+
+template <typename NODETYPE>
+std::ostream& operator<<(std::ostream& output, const List<NODETYPE>& right)
+{
+	for (ListIterator<NODETYPE> it = right; !it; ++it)
+	{
+		output << *it << " ";
+	}
+
+	return output;
 }
