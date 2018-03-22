@@ -161,12 +161,7 @@ int Student<TYPESTRING>::compareStudents(const Student<TYPESTRING>& right) const
 
 		if (result == 0)
 		{
-			result = m_Lastname.compare(right.m_Lastname);
-
-			if (result == 0)
-			{
-				return result;
-			}
+			return m_Lastname.compare(right.m_Lastname);
 		}
 	}
 
@@ -182,7 +177,7 @@ bool Student<TYPESTRING>::operator==(const Student<TYPESTRING>& right) const
 template <typename TYPESTRING>
 bool Student<TYPESTRING>::operator!=(const Student<TYPESTRING>& right) const
 {
-	return !(*this == right);
+	return compareStudents(right) != 0;
 }
 
 template <typename TYPESTRING>
