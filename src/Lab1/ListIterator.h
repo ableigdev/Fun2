@@ -16,22 +16,25 @@ public:
 	ListIterator<NODETYPE>& operator=(const List<NODETYPE>&);
 	NODETYPE operator*();
 private:
-	List<NODETYPE> m_List;
+	typename List<NODETYPE>::ListNode<NODETYPE>* m_Ptr;
 	size_t m_Index;
+	size_t m_Size;
 };
 
 template <typename NODETYPE>
 ListIterator<NODETYPE>::ListIterator(const List<NODETYPE>& list)
-	: m_List(list),
-	  m_Index(0)
+	: m_Ptr(list.firstPtr),
+	  m_Index(0),
+	  m_Size(list.m_Size)
 {
-	m_List.setCurrentNodeOnTheBegin();
+	
 }
 
 template <typename NODETYPE>
 ListIterator<NODETYPE>::ListIterator(const ListIterator<NODETYPE>& iterator)
-: m_List(iterator.m_List),
-  m_Index(iterator.m_Index)
+: m_Ptr(iterator.m_Ptr),
+  m_Index(iterator.m_Index),
+  m_Size(iterator.m_Size)
 {
 	
 }
@@ -45,13 +48,13 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const ListIterator<NOD
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const List<NODETYPE>& right)
 {
-	m_List = right.m_List;
+	m_Ptr = right.m_Ptr;
 }
 
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator++()
 {
-	++m_List;
+	m_Ptr = m_Ptr->nextPtr;
 	++m_Index;
 	
 	return *this;
@@ -60,7 +63,7 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator++()
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator--()
 {
-	--m_List;
+	m_Ptr = m_Ptr->prevPtr;
 	--m_Index;
 
 	return *this;
@@ -69,12 +72,12 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator--()
 template <typename NODETYPE>
 bool ListIterator<NODETYPE>::operator!()
 {
-	return m_Index < m_List.getSize();
+	return m_Index < m_Size;
 }
 
 template <typename NODETYPE>
 NODETYPE ListIterator<NODETYPE>::operator*()
 {
-	return m_List.getValueCurrentData();
+	return m_Ptr->data;
 }
 
