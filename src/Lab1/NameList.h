@@ -31,7 +31,7 @@ template <typename NODETYPE>
 NameList<NODETYPE>::NameList(const NameList<NODETYPE>& right)
 	: m_NameList(right.m_NameList)
 {
-
+	*this = right;
 }
 
 template <typename NODETYPE>

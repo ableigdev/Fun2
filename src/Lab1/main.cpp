@@ -42,6 +42,15 @@ int main()
 
 	std::cout << "name: " << list2.getNameClassList() << std::endl;
 
+	NameList<int> list3(list2);
+
+	std::cout << "list3: " << list3 << std::endl;
+
+	NameList<int> list4;
+
+	list4 = list3;
+
+	std::cout << "list4: " << list4 << std::endl;
 
 	std::cin.get();
 
