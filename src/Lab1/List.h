@@ -47,8 +47,8 @@ private:
 	struct ListNode
 	{
 		NODETYPE data; 
-		ListNode<NODETYPE>* nextPtr = 0;
-		ListNode<NODETYPE>* prevPtr = 0;
+		ListNode<NODETYPE>* nextPtr;
+		ListNode<NODETYPE>* prevPtr;
 	};
 						
 	ListNode<NODETYPE>* firstPtr;
@@ -56,8 +56,6 @@ private:
 	size_t m_Size;
 
 private:
-	void copyList(ListNode<NODETYPE>*);
-	void deleteRemaindList(ListNode<NODETYPE>*);
 	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
 	ListNode<NODETYPE>* fusion(ListNode<NODETYPE>*, size_t, ListNode<NODETYPE>*, size_t);
 	ListNode<NODETYPE>* mergeSort(ListNode<NODETYPE>*, size_t);
@@ -74,11 +72,10 @@ List<NODETYPE>::List()
 
 template <typename NODETYPE>
 List<NODETYPE>::List(const List<NODETYPE>& rList)
+	: firstPtr(0),
+	currentNodePtr(0),
+	m_Size(0)
 {
-	firstPtr = 0;
-	currentNodePtr = 0;
-	m_Size = 0;
-
 	if (!rList)
 	{
 		*this = rList;
@@ -96,7 +93,51 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 {
 	if (this != &rList)
 	{
-		copyList(rList.firstPtr);
+		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
+		ListNode<NODETYPE>* currentRightPtr = rList.firstPtr;
+		
+		if (m_Size >= rList.m_Size)
+		{
+			do 
+			{
+				currentFirstPtr->data = currentRightPtr->data;
+				currentFirstPtr = currentFirstPtr->nextPtr;
+				currentRightPtr = currentRightPtr->nextPtr;
+			} while (currentRightPtr != rList.firstPtr);
+
+			if (m_Size > rList.m_Size)
+			{
+				ListNode<NODETYPE>* prevCurrentFirstPtr = currentFirstPtr->prevPtr;
+				ListNode<NODETYPE>* tempPtr = 0;
+
+				do
+				{
+					tempPtr = currentFirstPtr;
+					currentFirstPtr = currentFirstPtr->nextPtr;
+					delete tempPtr;
+					--m_Size;
+				} while (currentFirstPtr != firstPtr);
+
+				prevCurrentFirstPtr->nextPtr = firstPtr;
+				firstPtr->prevPtr = prevCurrentFirstPtr;
+			}
+		}
+
+		if (m_Size < rList.m_Size)
+		{
+			for (size_t i = 0; i < m_Size; ++i)
+			{
+				currentFirstPtr->data = currentRightPtr->data;
+				currentFirstPtr = currentFirstPtr->nextPtr;
+				currentRightPtr = currentRightPtr->nextPtr;
+			}
+
+			do
+			{
+				pushBack(currentRightPtr->data);
+				currentRightPtr = currentRightPtr->nextPtr;
+			} while (currentRightPtr != rList.firstPtr);
+		}
 	}
 
 	return *this;
@@ -111,10 +152,8 @@ bool List<NODETYPE>::operator!() const
 template <typename NODETYPE>
 List<NODETYPE>& List<NODETYPE>::operator++()
 {
-	if (currentNodePtr == 0)
-		throw ReadAccessViolation();
-	
-	currentNodePtr = currentNodePtr->nextPtr;
+	if (currentNodePtr != 0)	
+		currentNodePtr = currentNodePtr->nextPtr;
 
 	return *this;
 }
@@ -122,10 +161,8 @@ List<NODETYPE>& List<NODETYPE>::operator++()
 template <typename NODETYPE>
 List<NODETYPE>& List<NODETYPE>::operator--()
 {
-	if (currentNodePtr == 0)
-		throw ReadAccessViolation();
-	
-	currentNodePtr = currentNodePtr->prevPtr;
+	if (currentNodePtr != 0)	
+		currentNodePtr = currentNodePtr->prevPtr;
 
 	return *this;
 }
@@ -154,64 +191,23 @@ size_t List<NODETYPE>::getSize() const
 template <typename NODETYPE>
 void List<NODETYPE>::setCurrentNodeOnTheBegin()
 {
+	if (firstPtr == 0)
+	{
+		throw ReadAccessViolation();
+	}
+
 	currentNodePtr = firstPtr;
 }
 
 template <typename NODETYPE>
 void List<NODETYPE>::setCurrentNodeOnTheEnd()
 {
+	if (firstPtr == 0)
+	{
+		throw ReadAccessViolation();
+	}
+
 	currentNodePtr = firstPtr->prevPtr;
-}
-
-template <typename NODETYPE>
-void List<NODETYPE>::copyList(ListNode<NODETYPE>* rightPtr)
-{
-	if (rightPtr != 0)
-	{
-		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
-		ListNode<NODETYPE>* currentRightPtr = rightPtr;
-		int counter = 0;
-
-		do
-		{
-			if (currentFirstPtr == 0 || counter != 0 && currentFirstPtr == firstPtr)
-			{
-				pushBack(currentRightPtr->data);
-			}
-			else
-			{
-				currentFirstPtr->data = currentRightPtr->data;
-				currentFirstPtr = currentFirstPtr->nextPtr;
-				++counter;
-			}
-			
-			currentRightPtr = currentRightPtr->nextPtr;
-			
-		} while (currentRightPtr != rightPtr);
-
-		if (currentFirstPtr != firstPtr)
-		{
-			deleteRemaindList(currentFirstPtr);
-		}
-	}
-}
-
-template <typename NODETYPE>
-void List<NODETYPE>::deleteRemaindList(ListNode<NODETYPE>* ptr)
-{
-	if (ptr != 0)
-	{
-		ListNode<NODETYPE>* tempPtr = 0;
-		do
-		{
-			ptr->prevPtr->nextPtr = ptr->nextPtr;
-			ptr->nextPtr->prevPtr = ptr->prevPtr;
-
-			tempPtr = ptr;
-			ptr = ptr->nextPtr;
-			delete tempPtr;
-		} while (ptr != firstPtr);
-	}
 }
 
 template <typename NODETYPE>
@@ -329,7 +325,7 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 
 				if (currentPtr == firstPtr)
 				{
-					firstPtr = nextTempPtr;
+					nextTempPtr == firstPtr ? firstPtr = 0 : firstPtr = nextTempPtr;
 				}
 				--m_Size;
 				return true;
@@ -353,8 +349,10 @@ void List<NODETYPE>::deleteAllElements()
 			tempPtr = currentPtr;
 			currentPtr = currentPtr->nextPtr;
 			delete tempPtr;
-			--m_Size;
 		} while (currentPtr != firstPtr);
+
+		m_Size = 0;
+		firstPtr = 0;
 	}
 }
 
