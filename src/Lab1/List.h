@@ -30,13 +30,14 @@ public:
 	void print() const;
 
 	void sort();
+	void sortCurrentNodePtr();
 
 	bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 	List<NODETYPE>& operator++();
 	List<NODETYPE>& operator--();
 
-	const NODETYPE& getReferencesCurrentData() const;
+	NODETYPE& getReferencesCurrentData() const;
 	NODETYPE getValueCurrentData() const;
 
 	template <typename NODETYPE>
@@ -376,7 +377,7 @@ bool List<NODETYPE>::findValue(const NODETYPE& value)
 }
 
 template <typename NODETYPE>
-const NODETYPE& List<NODETYPE>::getReferencesCurrentData() const
+NODETYPE& List<NODETYPE>::getReferencesCurrentData() const
 {
 	if (currentNodePtr == 0)
 		throw ReadAccessViolation();
@@ -506,6 +507,30 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<
 	return rootPtr;
 }
 
+template <typename NODETYPE>
+void List<NODETYPE>::sortCurrentNodePtr()
+{
+	if (!isEmpty())
+	{
+		if (currentNodePtr->data > currentNodePtr->nextPtr->data)
+		{
+			ListNode<NODETYPE>* tempPtr = currentNodePtr;
+
+			while (tempPtr->data > tempPtr->nextPtr->data)
+			{
+				tempPtr = tempPtr->nextPtr;
+			}
+
+			currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+			currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+
+			tempPtr->prevPtr->nextPtr = currentNodePtr;
+			currentNodePtr->prevPtr = tempPtr->prevPtr;
+			currentNodePtr->nextPtr = tempPtr;
+			tempPtr->prevPtr = currentNodePtr;
+		}
+	}
+}
 
 template <typename NODETYPE>
 std::ostream& operator<<(std::ostream& output, const List<NODETYPE>& right)
