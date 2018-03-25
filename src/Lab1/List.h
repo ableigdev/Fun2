@@ -478,6 +478,7 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NOD
 	}
 
 	firstPtr = currentPtr;
+	currentNodePtr = currentPtr;
 	return currentPtr;
 }
 
@@ -516,18 +517,22 @@ void List<NODETYPE>::sortCurrentNodePtr()
 		{
 			ListNode<NODETYPE>* tempPtr = currentNodePtr;
 
-			while (tempPtr->data > tempPtr->nextPtr->data)
+			while (currentNodePtr->data > tempPtr->nextPtr->data)
 			{
 				tempPtr = tempPtr->nextPtr;
 			}
 
-			currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-			currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+			ListNode<NODETYPE>* prevCurrentNodePtr = currentNodePtr->prevPtr;
+			ListNode<NODETYPE>* nextCurrentNodePtr = currentNodePtr->nextPtr;
+			ListNode<NODETYPE>* nextTempPtr = tempPtr->nextPtr;
 
-			tempPtr->prevPtr->nextPtr = currentNodePtr;
-			currentNodePtr->prevPtr = tempPtr->prevPtr;
-			currentNodePtr->nextPtr = tempPtr;
-			tempPtr->prevPtr = currentNodePtr;
+			prevCurrentNodePtr->nextPtr = nextCurrentNodePtr;
+			nextCurrentNodePtr->prevPtr = prevCurrentNodePtr;
+
+			tempPtr->nextPtr = currentNodePtr;
+			currentNodePtr->prevPtr = tempPtr;
+			currentNodePtr->nextPtr = nextTempPtr;
+			nextTempPtr->prevPtr = currentNodePtr;
 		}
 	}
 }
