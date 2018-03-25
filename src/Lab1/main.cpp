@@ -9,48 +9,24 @@
 
 int main()
 {
-	NameList<int> list("first");
-
+	std::srand(time(0));
+	List<int> lists;
 
 	for (int i = 0; i < 10; ++i)
 	{
-		list.pushFront(i);
+		lists.pushFront(rand() % 100);
 	}
 
-	std::cout << list << std::endl;
 
-	list.sort();
+	lists.sort();
+	lists.print();
+	int* value = &lists.getReferencesCurrentData();
 
-	std::cout << list << std::endl;
+	*value = 30;
 
-	std::cout << "name: " << list.getNameClassList() << std::endl;
-	
+	lists.sortCurrentNodePtr();
 
-	NameList<int> list2;
-
-	list2.pushInSortList(3);
-	list2.pushInSortList(1);
-	list2.pushInSortList(8);
-	list2.pushInSortList(5);
-	list2.pushInSortList(2);
-	list2.pushInSortList(3);
-	list2.pushInSortList(4);
-
-	std::cout << list2 << std::endl;
-
-	list2.setNameClassList("second");
-
-	std::cout << "name: " << list2.getNameClassList() << std::endl;
-
-	NameList<int> list3(list2);
-
-	std::cout << "list3: " << list3 << std::endl;
-
-	NameList<int> list4;
-
-	list4 = list3;
-
-	std::cout << "list4: " << list4 << std::endl;
+	lists.print();
 
 	std::cin.get();
 
