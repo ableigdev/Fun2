@@ -534,6 +534,29 @@ void List<NODETYPE>::sortCurrentNodePtr()
 			currentNodePtr->nextPtr = nextTempPtr;
 			nextTempPtr->prevPtr = currentNodePtr;
 		}
+
+		if (currentNodePtr->data < currentNodePtr->nextPtr->data && currentNodePtr != firstPtr)
+		{
+			ListNode<NODETYPE>* tempPtr = currentNodePtr;
+
+			while (currentNodePtr->data < tempPtr->prevPtr->data && tempPtr->prevPtr != firstPtr)
+			{
+				tempPtr = tempPtr->prevPtr;
+			}
+
+			ListNode<NODETYPE>* prevCurrentNodePtr = currentNodePtr->prevPtr;
+			ListNode<NODETYPE>* nextCurrentNodePtr = currentNodePtr->nextPtr;
+			ListNode<NODETYPE>* prevTempPtr = tempPtr->prevPtr;
+
+			prevCurrentNodePtr->nextPtr = nextCurrentNodePtr;
+			nextCurrentNodePtr->prevPtr = prevCurrentNodePtr;
+
+			currentNodePtr->nextPtr = prevTempPtr;
+			currentNodePtr->prevPtr = prevTempPtr->prevPtr;
+			prevTempPtr->prevPtr->nextPtr = currentNodePtr;
+			prevTempPtr->nextPtr = tempPtr;
+			tempPtr->prevPtr = prevTempPtr;
+		}
 	}
 }
 
