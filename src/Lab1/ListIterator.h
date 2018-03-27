@@ -48,7 +48,7 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const ListIterator<NOD
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const List<NODETYPE>& right)
 {
-	m_Ptr = right.m_Ptr;
+	m_Ptr = right.firstPtr;
 }
 
 template <typename NODETYPE>
