@@ -516,46 +516,45 @@ void List<NODETYPE>::sortCurrentNodePtr()
 		if (currentNodePtr->data > currentNodePtr->nextPtr->data)
 		{
 			ListNode<NODETYPE>* tempPtr = currentNodePtr;
-
-			while (currentNodePtr->data > tempPtr->nextPtr->data)
+			NODETYPE value = currentNodePtr->data;
+			
+			
+			if (currentNodePtr == firstPtr)
 			{
-				tempPtr = tempPtr->nextPtr;
+				firstPtr->prevPtr->nextPtr = firstPtr->nextPtr;
+				firstPtr->nextPtr->prevPtr = firstPtr->prevPtr;
+				firstPtr = firstPtr->nextPtr;
 			}
-
-			ListNode<NODETYPE>* prevCurrentNodePtr = currentNodePtr->prevPtr;
-			ListNode<NODETYPE>* nextCurrentNodePtr = currentNodePtr->nextPtr;
-			ListNode<NODETYPE>* nextTempPtr = tempPtr->nextPtr;
-
-			prevCurrentNodePtr->nextPtr = nextCurrentNodePtr;
-			nextCurrentNodePtr->prevPtr = prevCurrentNodePtr;
-
-			tempPtr->nextPtr = currentNodePtr;
-			currentNodePtr->prevPtr = tempPtr;
-			currentNodePtr->nextPtr = nextTempPtr;
-			nextTempPtr->prevPtr = currentNodePtr;
+			else
+			{
+				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+			}
+			
+			delete currentNodePtr;
+			--m_Size;
+			pushInSortList(value);
+			return;
 		}
 
-		if (currentNodePtr->data < currentNodePtr->nextPtr->data && currentNodePtr != firstPtr)
+		if (currentNodePtr->data < currentNodePtr->prevPtr->data)
 		{
 			ListNode<NODETYPE>* tempPtr = currentNodePtr;
-
-			while (currentNodePtr->data < tempPtr->prevPtr->data && tempPtr->prevPtr != firstPtr)
+			NODETYPE value = currentNodePtr->data;
+			
+			if (currentNodePtr == firstPtr)
 			{
-				tempPtr = tempPtr->prevPtr;
+				firstPtr->prevPtr->nextPtr = firstPtr->nextPtr;
+				firstPtr->nextPtr->prevPtr = firstPtr->prevPtr;
+				firstPtr = firstPtr->nextPtr;
+			}
+			else
+			{
+				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
 			}
 
-			ListNode<NODETYPE>* prevCurrentNodePtr = currentNodePtr->prevPtr;
-			ListNode<NODETYPE>* nextCurrentNodePtr = currentNodePtr->nextPtr;
-			ListNode<NODETYPE>* prevTempPtr = tempPtr->prevPtr;
-
-			prevCurrentNodePtr->nextPtr = nextCurrentNodePtr;
-			nextCurrentNodePtr->prevPtr = prevCurrentNodePtr;
-
-			currentNodePtr->nextPtr = prevTempPtr;
-			currentNodePtr->prevPtr = prevTempPtr->prevPtr;
-			prevTempPtr->prevPtr->nextPtr = currentNodePtr;
-			prevTempPtr->nextPtr = tempPtr;
-			tempPtr->prevPtr = prevTempPtr;
+			delete currentNodePtr;
+			--m_Size;
+			pushInSortList(value);
 		}
 	}
 }
