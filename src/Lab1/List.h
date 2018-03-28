@@ -513,7 +513,7 @@ void List<NODETYPE>::sortCurrentNodePtr()
 {
 	if (!isEmpty())
 	{
-		if (currentNodePtr->data > currentNodePtr->nextPtr->data)
+		if (currentNodePtr->data > currentNodePtr->nextPtr->data || currentNodePtr->data < currentNodePtr->prevPtr->data)
 		{
 			ListNode<NODETYPE>* tempPtr = currentNodePtr;
 			NODETYPE value = currentNodePtr->data;
@@ -534,27 +534,6 @@ void List<NODETYPE>::sortCurrentNodePtr()
 			--m_Size;
 			pushInSortList(value);
 			return;
-		}
-
-		if (currentNodePtr->data < currentNodePtr->prevPtr->data)
-		{
-			ListNode<NODETYPE>* tempPtr = currentNodePtr;
-			NODETYPE value = currentNodePtr->data;
-			
-			if (currentNodePtr == firstPtr)
-			{
-				firstPtr->prevPtr->nextPtr = firstPtr->nextPtr;
-				firstPtr->nextPtr->prevPtr = firstPtr->prevPtr;
-				firstPtr = firstPtr->nextPtr;
-			}
-			else
-			{
-				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-			}
-
-			delete currentNodePtr;
-			--m_Size;
-			pushInSortList(value);
 		}
 	}
 }
