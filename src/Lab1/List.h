@@ -25,14 +25,14 @@ public:
 
 	bool findValue(const NODETYPE&);
 
-	bool isEmpty() const;
-	size_t getSize() const;
+	inline bool isEmpty() const;
+	inline size_t getSize() const;
 	void print() const;
 
 	void sort();
 	void sortCurrentNodePtr();
 
-	bool operator!() const;
+	inline bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 	List<NODETYPE>& operator++();
 	List<NODETYPE>& operator--();
