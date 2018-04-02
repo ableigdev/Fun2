@@ -181,11 +181,6 @@ size_t List<NODETYPE>::getSize() const
 template <typename NODETYPE>
 void List<NODETYPE>::setCurrentNodeOnTheBegin()
 {
-	if (firstPtr == 0)
-	{
-		throw ReadAccessViolation();
-	}
-
 	currentNodePtr = firstPtr;
 }
 
@@ -194,9 +189,8 @@ void List<NODETYPE>::setCurrentNodeOnTheEnd()
 {
 	if (firstPtr == 0)
 	{
-		throw ReadAccessViolation();
+		currentNodePtr = 0;
 	}
-
 	currentNodePtr = firstPtr->prevPtr;
 }
 
