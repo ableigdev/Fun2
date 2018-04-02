@@ -92,47 +92,36 @@ List<NODETYPE>::~List()
 template <typename NODETYPE>
 const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 {
-	if (this != &rList)
+	if (!*this && !rList && this != &rList)
 	{
 		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
 		ListNode<NODETYPE>* currentRightPtr = rList.firstPtr;
-		
-		if (m_Size >= rList.m_Size)
+				
+		do 
 		{
-			do 
+			currentFirstPtr->data = currentRightPtr->data;
+			currentFirstPtr = currentFirstPtr->nextPtr;
+			currentRightPtr = currentRightPtr->nextPtr;
+		} while (currentRightPtr != rList.firstPtr && currentFirstPtr != firstPtr);
+
+		if (m_Size > rList.m_Size)
+		{
+			currentFirstPtr->prevPtr->nextPtr = firstPtr;
+			firstPtr->prevPtr = currentFirstPtr->prevPtr;
+			ListNode<NODETYPE>* tempPtr = 0;
+
+			do
 			{
-				currentFirstPtr->data = currentRightPtr->data;
+				tempPtr = currentFirstPtr;
 				currentFirstPtr = currentFirstPtr->nextPtr;
-				currentRightPtr = currentRightPtr->nextPtr;
-			} while (currentRightPtr != rList.firstPtr);
-
-			if (m_Size > rList.m_Size)
-			{
-				ListNode<NODETYPE>* prevCurrentFirstPtr = currentFirstPtr->prevPtr;
-				ListNode<NODETYPE>* tempPtr = 0;
-
-				do
-				{
-					tempPtr = currentFirstPtr;
-					currentFirstPtr = currentFirstPtr->nextPtr;
-					delete tempPtr;
-					--m_Size;
-				} while (currentFirstPtr != firstPtr);
-
-				prevCurrentFirstPtr->nextPtr = firstPtr;
-				firstPtr->prevPtr = prevCurrentFirstPtr;
-			}
+				delete tempPtr;
+				--m_Size;
+			} while (currentFirstPtr != firstPtr);	
 		}
+		
 
 		if (m_Size < rList.m_Size)
 		{
-			for (size_t i = 0; i < m_Size; ++i)
-			{
-				currentFirstPtr->data = currentRightPtr->data;
-				currentFirstPtr = currentFirstPtr->nextPtr;
-				currentRightPtr = currentRightPtr->nextPtr;
-			}
-
 			do
 			{
 				pushBack(currentRightPtr->data);
