@@ -215,20 +215,19 @@ void List<NODETYPE>::pushFront(const NODETYPE& value)
 {
 	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
-	if (isEmpty())
+	if (!isEmpty())
 	{	
-		firstPtr->nextPtr = firstPtr->prevPtr = firstPtr = newPtr;
+		firstPtr->prevPtr->nextPtr = newPtr;
+		newPtr->prevPtr = firstPtr->prevPtr;
 	}
 	else
 	{
-		ListNode<NODETYPE>* tempPtr = firstPtr->prevPtr;
-		newPtr->nextPtr = firstPtr;
-		newPtr->prevPtr = firstPtr->prevPtr;
-		firstPtr->prevPtr = newPtr;
-		tempPtr->nextPtr = newPtr;
-		firstPtr = newPtr;
+		currentNodePtr = firstPtr = newPtr;
 	}
-	currentNodePtr = firstPtr;
+	newPtr->nextPtr = firstPtr;
+	firstPtr->prevPtr = newPtr;
+	firstPtr = newPtr;
+	
 	++m_Size;
 }
 
