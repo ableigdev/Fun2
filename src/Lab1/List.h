@@ -238,7 +238,7 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 
 	if (isEmpty())
 	{
-		firstPtr->nextPtr = firstPtr->prevPtr = firstPtr = newPtr;
+		currentNodePtr = firstPtr->nextPtr = firstPtr->prevPtr = firstPtr = newPtr;
 	}
 	else
 	{
@@ -248,7 +248,6 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 		firstPtr->prevPtr = newPtr;
 		tempPtr->nextPtr = newPtr;
 	}
-	currentNodePtr = firstPtr;
 	++m_Size;
 }
 
@@ -291,7 +290,6 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 	if (!isEmpty())
 	{
 		ListNode<NODETYPE>* currentPtr = firstPtr;
-		ListNode<NODETYPE>* tempPtr = 0;
 
 		do
 		{
@@ -299,17 +297,16 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 			{
 				ListNode<NODETYPE>* prevTempPtr = currentPtr->prevPtr;
 				ListNode<NODETYPE>* nextTempPtr = currentPtr->nextPtr;
-				tempPtr = currentPtr;
 
 				prevTempPtr->nextPtr = nextTempPtr;
 				nextTempPtr->prevPtr = prevTempPtr;
 
-				delete tempPtr;
-
 				if (currentPtr == firstPtr)
 				{
-					nextTempPtr == firstPtr ? firstPtr = 0 : firstPtr = nextTempPtr;
+					firstPtr = nextTempPtr != firstPtr ? nextTempPtr : 0;
 				}
+				
+				delete currentPtr;
 				--m_Size;
 				return true;
 			}
