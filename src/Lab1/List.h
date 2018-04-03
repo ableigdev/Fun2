@@ -27,7 +27,6 @@ public:
 
 	inline bool isEmpty() const;
 	inline size_t getSize() const;
-	void print() const;
 
 	void sort();
 	void sortCurrentNodePtr();
@@ -192,22 +191,6 @@ void List<NODETYPE>::setCurrentNodeOnTheEnd()
 		currentNodePtr = 0;
 	}
 	currentNodePtr = firstPtr->prevPtr;
-}
-
-template <typename NODETYPE>
-void List<NODETYPE>::print() const
-{
-	if (!isEmpty())
-	{
-		ListNode<NODETYPE>* currentPtr = firstPtr;
-
-		do
-		{
-			std::cout << currentPtr->data << ' ';
-			currentPtr = currentPtr->nextPtr;
-		} while (currentPtr != firstPtr);
-	}
-	std::cout << std::endl;
 }
 
 template <typename NODETYPE>
