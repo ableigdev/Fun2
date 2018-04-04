@@ -475,27 +475,59 @@ void List<NODETYPE>::sortCurrentNodePtr()
 {
 	if (!isEmpty())
 	{
-		if (currentNodePtr->data > currentNodePtr->nextPtr->data || currentNodePtr->data < currentNodePtr->prevPtr->data)
+		if (currentNodePtr->data > currentNodePtr->nextPtr->data)
 		{
-			ListNode<NODETYPE>* tempPtr = currentNodePtr;
-			NODETYPE value = currentNodePtr->data;
-			
-			
+			ListNode<NODETYPE>* tempPtr = currentNodePtr->nextPtr;
+
+			while (currentNodePtr->data > tempPtr->data)
+			{
+				tempPtr = tempPtr->nextPtr;
+			}
+
+			currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+			currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+				
+			tempPtr->prevPtr->nextPtr = currentNodePtr;
+			currentNodePtr->prevPtr = tempPtr->prevPtr;
+			currentNodePtr->nextPtr = tempPtr;
+			tempPtr->prevPtr = currentNodePtr;
+		}
+
+		if (currentNodePtr->data < currentNodePtr->prevPtr->data)
+		{
 			if (currentNodePtr == firstPtr)
 			{
-				firstPtr->prevPtr->nextPtr = firstPtr->nextPtr;
-				firstPtr->nextPtr->prevPtr = firstPtr->prevPtr;
-				firstPtr = firstPtr->nextPtr;
+				return;
+			}
+
+			if (currentNodePtr->data < firstPtr->data)
+			{
+				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+				currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+
+				firstPtr->prevPtr->nextPtr = currentNodePtr;
+				currentNodePtr->prevPtr = firstPtr->prevPtr;
+				currentNodePtr->nextPtr = firstPtr;
+				firstPtr->prevPtr = currentNodePtr;
+				firstPtr = currentNodePtr;
 			}
 			else
 			{
+				ListNode<NODETYPE>* tempPtr = currentNodePtr->prevPtr;
+
+				while (currentNodePtr->data < tempPtr->data && tempPtr != firstPtr)
+				{
+					tempPtr = tempPtr->prevPtr;
+				}
+
 				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+				currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+
+				tempPtr->nextPtr->prevPtr = currentNodePtr;
+				currentNodePtr->nextPtr = tempPtr->nextPtr;
+				currentNodePtr->prevPtr = tempPtr;
+				tempPtr->nextPtr = currentNodePtr;
 			}
-			
-			delete currentNodePtr;
-			--m_Size;
-			pushInSortList(value);
-			return;
 		}
 	}
 }
