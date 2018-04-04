@@ -78,6 +78,10 @@ bool ListIterator<NODETYPE>::operator!()
 template <typename NODETYPE>
 NODETYPE ListIterator<NODETYPE>::operator*()
 {
+	if (m_Ptr == 0)
+	{
+		throw ReadAccessViolation();
+	}
 	return m_Ptr->data;
 }
 
