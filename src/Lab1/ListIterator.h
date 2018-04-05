@@ -42,13 +42,21 @@ ListIterator<NODETYPE>::ListIterator(const ListIterator<NODETYPE>& iterator)
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const ListIterator<NODETYPE>& right)
 {
-	*this = right;
+	if (this != &right)
+	{
+		*this = right;
+	}
+	return *this;
 } 
 
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const List<NODETYPE>& right)
 {
-	m_Ptr = right.firstPtr;
+	if (this != &right)
+	{
+		m_Ptr = right.firstPtr;
+	}
+	return *this;
 }
 
 template <typename NODETYPE>
