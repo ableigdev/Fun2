@@ -196,11 +196,7 @@ void List<NODETYPE>::setCurrentNodeOnTheBegin()
 template <typename NODETYPE>
 void List<NODETYPE>::setCurrentNodeOnTheEnd()
 {
-	if (firstPtr == 0)
-	{
-		currentNodePtr = 0;
-	}
-	currentNodePtr = firstPtr->prevPtr;
+	currentNodePtr = firstPtr == 0 ? 0 : firstPtr->prevPtr;;
 }
 
 template <typename NODETYPE>
