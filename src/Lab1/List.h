@@ -219,18 +219,18 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 {
 	ListNode<NODETYPE>* newPtr = getNewNode(value);
 
-	if (isEmpty())
+	if (!isEmpty())
 	{
-		currentNodePtr = firstPtr->nextPtr = firstPtr->prevPtr = firstPtr = newPtr;
+		firstPtr->prevPtr->nextPtr = newPtr;
+		newPtr->prevPtr = firstPtr->prevPtr;
 	}
 	else
 	{
-		ListNode<NODETYPE>* tempPtr = firstPtr->prevPtr;
-		newPtr->nextPtr = firstPtr;
-		newPtr->prevPtr = firstPtr->prevPtr;
-		firstPtr->prevPtr = newPtr;
-		tempPtr->nextPtr = newPtr;
+		currentNodePtr = firstPtr = newPtr;
 	}
+
+	newPtr->nextPtr = firstPtr;
+	firstPtr->prevPtr = newPtr;
 	++m_Size;
 }
 
