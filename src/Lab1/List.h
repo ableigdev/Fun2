@@ -92,17 +92,20 @@ List<NODETYPE>::~List()
 template <typename NODETYPE>
 const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 {
-	if (!*this && !rList && this != &rList)
+	if (this != &rList)
 	{
 		ListNode<NODETYPE>* currentFirstPtr = firstPtr;
 		ListNode<NODETYPE>* currentRightPtr = rList.firstPtr;
-				
-		do 
+		
+		if (!*this && !rList)
 		{
-			currentFirstPtr->data = currentRightPtr->data;
-			currentFirstPtr = currentFirstPtr->nextPtr;
-			currentRightPtr = currentRightPtr->nextPtr;
-		} while (currentRightPtr != rList.firstPtr && currentFirstPtr != firstPtr);
+			do
+			{
+				currentFirstPtr->data = currentRightPtr->data;
+				currentFirstPtr = currentFirstPtr->nextPtr;
+				currentRightPtr = currentRightPtr->nextPtr;
+			} while (currentRightPtr != rList.firstPtr && currentFirstPtr != firstPtr);
+		}
 
 		if (m_Size > rList.m_Size)
 		{
@@ -114,9 +117,15 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 			{
 				tempPtr = currentFirstPtr;
 				currentFirstPtr = currentFirstPtr->nextPtr;
+
+				if (tempPtr == firstPtr)
+				{
+					currentNodePtr = firstPtr = 0;
+				}
+
 				delete tempPtr;
 				--m_Size;
-			} while (currentFirstPtr != firstPtr);	
+			} while (currentFirstPtr != firstPtr && m_Size > 0);	
 		}
 		
 
