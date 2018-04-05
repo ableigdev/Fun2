@@ -474,7 +474,7 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<
 template <typename NODETYPE>
 void List<NODETYPE>::sortCurrentNodePtr()
 {
-	if (!isEmpty())
+	if (!isEmpty() && getSize() > 1)
 	{
 		if (currentNodePtr->data > currentNodePtr->nextPtr->data)
 		{
@@ -496,38 +496,36 @@ void List<NODETYPE>::sortCurrentNodePtr()
 
 		if (currentNodePtr->data < currentNodePtr->prevPtr->data)
 		{
-			if (currentNodePtr == firstPtr)
+			if (currentNodePtr != firstPtr)
 			{
-				return;
-			}
-
-			if (currentNodePtr->data < firstPtr->data)
-			{
-				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-				currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
-
-				firstPtr->prevPtr->nextPtr = currentNodePtr;
-				currentNodePtr->prevPtr = firstPtr->prevPtr;
-				currentNodePtr->nextPtr = firstPtr;
-				firstPtr->prevPtr = currentNodePtr;
-				firstPtr = currentNodePtr;
-			}
-			else
-			{
-				ListNode<NODETYPE>* tempPtr = currentNodePtr->prevPtr;
-
-				while (currentNodePtr->data < tempPtr->data && tempPtr != firstPtr)
+				if (currentNodePtr->data < firstPtr->data)
 				{
-					tempPtr = tempPtr->prevPtr;
+					currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+					currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+
+					firstPtr->prevPtr->nextPtr = currentNodePtr;
+					currentNodePtr->prevPtr = firstPtr->prevPtr;
+					currentNodePtr->nextPtr = firstPtr;
+					firstPtr->prevPtr = currentNodePtr;
+					firstPtr = currentNodePtr;
 				}
+				else
+				{
+					ListNode<NODETYPE>* tempPtr = currentNodePtr->prevPtr;
 
-				currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-				currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+					while (currentNodePtr->data < tempPtr->data && tempPtr != firstPtr)
+					{
+						tempPtr = tempPtr->prevPtr;
+					}
 
-				tempPtr->nextPtr->prevPtr = currentNodePtr;
-				currentNodePtr->nextPtr = tempPtr->nextPtr;
-				currentNodePtr->prevPtr = tempPtr;
-				tempPtr->nextPtr = currentNodePtr;
+					currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
+					currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+
+					tempPtr->nextPtr->prevPtr = currentNodePtr;
+					currentNodePtr->nextPtr = tempPtr->nextPtr;
+					currentNodePtr->prevPtr = tempPtr;
+					tempPtr->nextPtr = currentNodePtr;
+				}
 			}
 		}
 	}
