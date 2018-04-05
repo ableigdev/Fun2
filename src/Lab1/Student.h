@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <tchar.h>
 
 template <typename TYPESTRING>
 class Student
@@ -53,8 +54,6 @@ private:
 	short int m_BirthYear;
 	float m_AverageGrade;
 };
-
-
 
 template <typename TYPESTRING>
 Student<TYPESTRING>::Student()
@@ -207,8 +206,8 @@ bool Student<TYPESTRING>::operator<(const Student<TYPESTRING>& right) const
 template <typename TYPESTRING>
 std::ostream& operator<<(std::ostream& output, const Student<TYPESTRING>& right)
 {
-	output << right.m_Surname << " " << right.m_Name << " "
-		<< right.m_Lastname << " " << right.m_BirthYear << " "
+	output << right.m_Surname << __T(" ") << right.m_Name << __T(" ")
+		<< right.m_Lastname << __T(" ") << right.m_BirthYear << __T(" ")
 		<< right.m_AverageGrade << std::endl;
 
 	return output;
@@ -226,8 +225,8 @@ std::istream& operator >> (std::istream& input, Student<TYPESTRING>& right)
 template <typename TYPESTRING>
 std::wostream& operator<<(std::wostream& output, const Student<TYPESTRING>& right)
 {
-	output << right.m_Surname << " " << right.m_Name << " "
-		<< right.m_Lastname << " " << right.m_BirthYear << " "
+	output << right.m_Surname << __T(" ") << right.m_Name << __T(" ")
+		<< right.m_Lastname << __T(" ") << right.m_BirthYear << __T(" ")
 		<< right.m_AverageGrade << std::endl;
 
 	return output;

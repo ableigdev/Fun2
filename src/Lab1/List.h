@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tchar.h>
 #include "ReadAccessViolation.h"
 
 template <typename NODETYPE> class ListIterator;
@@ -537,7 +538,7 @@ std::ostream& operator<<(std::ostream& output, const List<NODETYPE>& right)
 {
 	for (ListIterator<NODETYPE> it = right; !it; ++it)
 	{
-		output << *it << " ";
+		output << *it << __T(" ");
 	}
 
 	return output;
