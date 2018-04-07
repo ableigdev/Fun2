@@ -31,7 +31,8 @@ public:
 
 	void sort();
 	void sortCurrentNodePtr();
-
+	int bubbleSort();
+	
 	inline bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
 	List<NODETYPE>& operator++();
@@ -545,4 +546,36 @@ std::ostream& operator<<(std::ostream& output, const List<NODETYPE>& right)
 	}
 
 	return output;
+}
+
+template <typename NODETYPE>
+int List<NODETYPE>::bubbleSort()
+{
+	int counter = 0;
+	if (!isEmpty())
+	{
+		if (getSize() > 1)
+		{
+			bool sorted = true;
+			
+			while (sorted)
+			{
+				sorted = false;
+				ListNode<NODETYPE>* currentPtr = firstPtr;
+				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
+				
+				do
+				{
+					if (currentPtr->data > secondCurrentPtr->data)
+					{
+						sorted = true;
+						return ++counter;
+					}
+					currentPtr = currentPtr->nextPtr;
+					secondCurrentPtr = secondCurrentPtr->nextPtr;
+				} while (secondCurrentPtr->nextPtr != firstPtr);
+			}
+		}
+	}
+	return counter;
 }
