@@ -32,6 +32,9 @@ public:
 	void sort();
 	void sortCurrentNodePtr();
 	int bubbleSort();
+
+	size_t getCounterRecursiveCall() const;
+	size_t getCounterCompare() const;
 	
 	inline bool operator!() const;
 	const List<NODETYPE>& operator=(const List<NODETYPE>&);
@@ -56,6 +59,8 @@ private:
 	ListNode<NODETYPE>* firstPtr;
 	ListNode<NODETYPE>* currentNodePtr;
 	size_t m_Size;
+	size_t m_CounterRecursiveCall;
+	size_t m_CounterCompare;
 
 private:
 	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
@@ -67,7 +72,9 @@ template <typename NODETYPE>
 List<NODETYPE>::List()
 	: firstPtr(0),
 	currentNodePtr(0),
-	m_Size(0)
+	m_Size(0),
+	m_CounterRecursiveCall(0),
+	m_CounterCompare(0)
 {
 	
 }
@@ -76,7 +83,9 @@ template <typename NODETYPE>
 List<NODETYPE>::List(const List<NODETYPE>& rList)
 	: firstPtr(0),
 	currentNodePtr(0),
-	m_Size(0)
+	m_Size(0),
+	m_CounterRecursiveCall(0),
+	m_CounterCompare(0)
 {
 	if (!rList)
 	{
@@ -377,6 +386,7 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NOD
 
 	while (leftListSize > 0 && rightListSize > 0)
 	{
+		++m_CounterCompare;
 		if (leftListPtr->data <= rightListPtr->data)
 		{
 			/* select element from leftListPtr list */
@@ -454,6 +464,7 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NOD
 template <typename NODETYPE>
 typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::mergeSort(ListNode<NODETYPE>* rootPtr, size_t sizeList)
 {
+	++m_CounterRecursiveCall;
 	ListNode<NODETYPE>* leftListPtr;
 	ListNode<NODETYPE>* rightListPtr;
 
@@ -578,4 +589,16 @@ int List<NODETYPE>::bubbleSort()
 		}
 	}
 	return counter;
+}
+
+template <typename NODETYPE>
+size_t List<NODETYPE>::getCounterRecursiveCall() const
+{
+	return m_CounterRecursiveCall;
+}
+
+template <typename NODETYPE>
+size_t List<NODETYPE>::getCounterCompare() const
+{
+	return m_CounterCompare;
 }
