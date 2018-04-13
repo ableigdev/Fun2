@@ -47,6 +47,9 @@ public:
 	template <typename NODETYPE>
 	friend std::ostream& operator<<(std::ostream&, const List<NODETYPE>&);
 
+	template <typename NODETYPE>
+	friend std::wostream& operator<<(std::wostream&, const List<NODETYPE>&);
+
 private:
 	template <typename NODETYPE>
 	struct ListNode
@@ -542,6 +545,17 @@ void List<NODETYPE>::sortCurrentNodePtr()
 
 template <typename NODETYPE>
 std::ostream& operator<<(std::ostream& output, const List<NODETYPE>& right)
+{
+	for (ListIterator<NODETYPE> it = right; !it; ++it)
+	{
+		output << *it << __T(" ");
+	}
+
+	return output;
+}
+
+template <typename NODETYPE>
+std::wostream& operator<<(std::wostream& output, const List<NODETYPE>& right)
 {
 	for (ListIterator<NODETYPE> it = right; !it; ++it)
 	{
