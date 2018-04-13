@@ -62,18 +62,22 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const List<NODETYPE>& 
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator++()
 {
-	m_Ptr = m_Ptr->nextPtr;
-	++m_Index;
-	
+	if (m_Ptr != 0)
+	{
+		m_Ptr = m_Ptr->nextPtr;
+		++m_Index;
+	}
 	return *this;
 }
 
 template <typename NODETYPE>
 ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator--()
 {
-	m_Ptr = m_Ptr->prevPtr;
-	--m_Index;
-
+	if (m_Ptr != 0)
+	{
+		m_Ptr = m_Ptr->prevPtr;
+		--m_Index;
+	}
 	return *this;
 }
 
