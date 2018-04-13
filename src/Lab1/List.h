@@ -31,7 +31,7 @@ public:
 
 	void sort();
 	void sortCurrentNodePtr();
-	int bubbleSort();
+	bool bubbleSort();
 
 	size_t getCounterRecursiveCall() const;
 	size_t getCounterCompare() const;
@@ -566,35 +566,28 @@ std::wostream& operator<<(std::wostream& output, const List<NODETYPE>& right)
 }
 
 template <typename NODETYPE>
-int List<NODETYPE>::bubbleSort()
+bool List<NODETYPE>::bubbleSort()
 {
-	int counter = 0;
 	if (!isEmpty())
 	{
 		if (getSize() > 1)
 		{
-			bool sorted = true;
-			
-			while (sorted)
-			{
-				sorted = false;
-				ListNode<NODETYPE>* currentPtr = firstPtr;
-				ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
+			ListNode<NODETYPE>* currentPtr = firstPtr;
+			ListNode<NODETYPE>* secondCurrentPtr = currentPtr->nextPtr;
 				
-				do
+			do
+			{
+				if (currentPtr->data > secondCurrentPtr->data)
 				{
-					if (currentPtr->data > secondCurrentPtr->data)
-					{
-						sorted = true;
-						return ++counter;
-					}
-					currentPtr = currentPtr->nextPtr;
-					secondCurrentPtr = secondCurrentPtr->nextPtr;
-				} while (secondCurrentPtr->nextPtr != firstPtr);
-			}
+					return false;
+				}
+				currentPtr = currentPtr->nextPtr;
+				secondCurrentPtr = secondCurrentPtr->nextPtr;
+			} while (secondCurrentPtr->nextPtr != firstPtr);
+			
 		}
 	}
-	return counter;
+	return true;
 }
 
 template <typename NODETYPE>
