@@ -35,14 +35,9 @@ public:
 	bool operator<(const Student<TYPESTRING>&) const;
 
 	template <typename TYPESTRING>
-	friend std::ostream& operator<<(std::ostream&, const Student<TYPESTRING>&);
+	friend std::basic_ostream<TYPESTRING>& operator<<(std::basic_ostream<TYPESTRING>&, const Student<TYPESTRING>&);
 	template <typename TYPESTRING>
-	friend std::istream& operator>>(std::istream&, Student<TYPESTRING>&);
-
-	template <typename TYPESTRING>
-	friend std::wostream& operator<<(std::wostream&, const Student<TYPESTRING>&);
-	template <typename TYPESTRING>
-	friend std::wistream& operator >> (std::wistream&, Student<TYPESTRING>&);
+	friend std::basic_istream<TYPESTRING>& operator>>(std::basic_istream<TYPESTRING>&, Student<TYPESTRING>&);
 
 private:
 	int compareStudents(const Student<TYPESTRING>&) const;
@@ -204,7 +199,7 @@ bool Student<TYPESTRING>::operator<(const Student<TYPESTRING>& right) const
 }
 
 template <typename TYPESTRING>
-std::ostream& operator<<(std::ostream& output, const Student<TYPESTRING>& right)
+std::basic_ostream<TYPESTRING>& operator<<(std::basic_ostream<TYPESTRING>& output, const Student<TYPESTRING>& right)
 {
 	output << right.m_Surname << __T(" ") << right.m_Name << __T(" ")
 		<< right.m_Lastname << __T(" ") << right.m_BirthYear << __T(" ")
@@ -214,26 +209,7 @@ std::ostream& operator<<(std::ostream& output, const Student<TYPESTRING>& right)
 }
 
 template <typename TYPESTRING>
-std::istream& operator >> (std::istream& input, Student<TYPESTRING>& right)
-{
-	input >> right.m_Surname >> right.m_Name >> right.m_Lastname
-		>> right.m_BirthYear >> right.m_AverageGrade;
-
-	return input;
-}
-
-template <typename TYPESTRING>
-std::wostream& operator<<(std::wostream& output, const Student<TYPESTRING>& right)
-{
-	output << right.m_Surname << __T(" ") << right.m_Name << __T(" ")
-		<< right.m_Lastname << __T(" ") << right.m_BirthYear << __T(" ")
-		<< right.m_AverageGrade << std::endl;
-
-	return output;
-}
-
-template <typename TYPESTRING>
-std::wistream& operator >> (std::wistream& input, Student<TYPESTRING>& right)
+std::basic_istream<TYPESTRING>& operator >> (std::basic_istream<TYPESTRING>& input, Student<TYPESTRING>& right)
 {
 	input >> right.m_Surname >> right.m_Name >> right.m_Lastname
 		>> right.m_BirthYear >> right.m_AverageGrade;
