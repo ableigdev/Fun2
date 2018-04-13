@@ -66,6 +66,7 @@ private:
 	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
 	ListNode<NODETYPE>* fusion(ListNode<NODETYPE>*, size_t, ListNode<NODETYPE>*, size_t);
 	ListNode<NODETYPE>* mergeSort(ListNode<NODETYPE>*, size_t);
+	void detachNode(ListNode<NODETYPE>*);
 };
 
 template <typename NODETYPE>
@@ -294,15 +295,11 @@ bool List<NODETYPE>::deleteElement(NODETYPE value)
 		{
 			if (currentPtr->data == value)
 			{
-				ListNode<NODETYPE>* prevTempPtr = currentPtr->prevPtr;
-				ListNode<NODETYPE>* nextTempPtr = currentPtr->nextPtr;
-
-				prevTempPtr->nextPtr = nextTempPtr;
-				nextTempPtr->prevPtr = prevTempPtr;
+				detachNode(currentPtr);
 
 				if (currentPtr == firstPtr)
 				{
-					firstPtr = nextTempPtr != firstPtr ? nextTempPtr : 0;
+					firstPtr = currentPtr->nextPtr != firstPtr ? currentPtr->nextPtr : 0;
 				}
 				
 				delete currentPtr;
@@ -402,8 +399,7 @@ typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NOD
 			--rightListSize;
 		}
 		/* detach tempPtr */
-		tempPtr->prevPtr->nextPtr = tempPtr->nextPtr;
-		tempPtr->nextPtr->prevPtr = tempPtr->prevPtr;
+		detachNode(tempPtr);
 		tempPtr->nextPtr = tempPtr->prevPtr = tempPtr;
 		
 		if (currentPtr == 0)
@@ -501,9 +497,7 @@ void List<NODETYPE>::sortCurrentNodePtr()
 			{
 				tempPtr = tempPtr->nextPtr;
 			}
-
-			currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-			currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+			detachNode(currentNodePtr);
 				
 			tempPtr->prevPtr->nextPtr = currentNodePtr;
 			currentNodePtr->prevPtr = tempPtr->prevPtr;
@@ -517,8 +511,7 @@ void List<NODETYPE>::sortCurrentNodePtr()
 			{
 				if (currentNodePtr->data < firstPtr->data)
 				{
-					currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-					currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+					detachNode(currentNodePtr);
 
 					firstPtr->prevPtr->nextPtr = currentNodePtr;
 					currentNodePtr->prevPtr = firstPtr->prevPtr;
@@ -535,8 +528,7 @@ void List<NODETYPE>::sortCurrentNodePtr()
 						tempPtr = tempPtr->prevPtr;
 					}
 
-					currentNodePtr->prevPtr->nextPtr = currentNodePtr->nextPtr;
-					currentNodePtr->nextPtr->prevPtr = currentNodePtr->prevPtr;
+					detachNode(currentNodePtr);
 
 					tempPtr->nextPtr->prevPtr = currentNodePtr;
 					currentNodePtr->nextPtr = tempPtr->nextPtr;
@@ -601,4 +593,14 @@ template <typename NODETYPE>
 size_t List<NODETYPE>::getCounterCompare() const
 {
 	return m_CounterCompare;
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::detachNode(ListNode<NODETYPE>* ptr)
+{
+	if (ptr != 0)
+	{
+		ptr->prevPtr->nextPtr = ptr->nextPtr;
+		ptr->nextPtr->prevPtr = ptr->prevPtr;
+	}
 }
