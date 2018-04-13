@@ -128,14 +128,14 @@ const List<NODETYPE>& List<NODETYPE>::operator=(const List<NODETYPE>& rList)
 				tempPtr = currentFirstPtr;
 				currentFirstPtr = currentFirstPtr->nextPtr;
 
-				if (tempPtr == firstPtr)
-				{
-					currentNodePtr = firstPtr = 0;
-				}
-
 				delete tempPtr;
 				--m_Size;
 			} while (currentFirstPtr != firstPtr && m_Size > 0);	
+
+			if (m_Size == 0)
+			{
+				currentNodePtr = firstPtr = 0;
+			}
 		}
 		
 
