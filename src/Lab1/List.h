@@ -64,6 +64,7 @@ private:
 	size_t m_Size;
 	size_t m_CounterRecursiveCall;
 	size_t m_CounterCompare;
+	bool m_Sorted;
 
 private:
 	ListNode<NODETYPE>* getNewNode(const NODETYPE&);
@@ -78,7 +79,8 @@ List<NODETYPE>::List()
 	currentNodePtr(0),
 	m_Size(0),
 	m_CounterRecursiveCall(0),
-	m_CounterCompare(0)
+	m_CounterCompare(0),
+	m_Sorted(false)
 {
 	
 }
@@ -89,7 +91,8 @@ List<NODETYPE>::List(const List<NODETYPE>& rList)
 	currentNodePtr(0),
 	m_Size(0),
 	m_CounterRecursiveCall(0),
-	m_CounterCompare(0)
+	m_CounterCompare(0),
+	m_Sorted(false)
 {
 	if (!rList)
 	{
@@ -232,6 +235,7 @@ void List<NODETYPE>::pushFront(const NODETYPE& value)
 	firstPtr = newPtr;
 	
 	++m_Size;
+	m_Sorted = false;
 }
 
 template <typename NODETYPE>
@@ -252,6 +256,7 @@ void List<NODETYPE>::pushBack(const NODETYPE& value)
 	newPtr->nextPtr = firstPtr;
 	firstPtr->prevPtr = newPtr;
 	++m_Size;
+	m_Sorted = false;
 }
 
 template <typename NODETYPE>
@@ -285,6 +290,7 @@ void List<NODETYPE>::pushInSortList(const NODETYPE& value)
 			currentPtr = currentPtr->nextPtr;
 		} while (currentPtr != firstPtr);
 	}
+	m_Sorted = true;
 }
 
 template <typename NODETYPE>
@@ -375,7 +381,10 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 template <typename NODETYPE>
 void List<NODETYPE>::sort()
 {
-	mergeSort(firstPtr, m_Size);
+	if (!m_Sorted)
+	{
+		mergeSort(firstPtr, m_Size);
+	}
 }
 
 template <typename NODETYPE>
