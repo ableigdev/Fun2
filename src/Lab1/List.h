@@ -390,6 +390,7 @@ void List<NODETYPE>::sort()
 template <typename NODETYPE>
 typename List<NODETYPE>::ListNode<NODETYPE>* List<NODETYPE>::fusion(ListNode<NODETYPE>* leftListPtr, size_t leftListSize, ListNode<NODETYPE>* rightListPtr, size_t rightListSize)
 {
+	++m_CounterRecursiveCall;
 	ListNode<NODETYPE>* currentPtr = 0;
 	ListNode<NODETYPE>* tempPtr;
 
