@@ -44,7 +44,9 @@ ListIterator<NODETYPE>& ListIterator<NODETYPE>::operator=(const ListIterator<NOD
 {
 	if (this != &right)
 	{
-		*this = right;
+		m_Index = right.m_Index;
+		m_Size = right.m_Size;
+		m_Ptr = right.m_Ptr;
 	}
 	return *this;
 } 
