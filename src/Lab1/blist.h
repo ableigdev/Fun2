@@ -171,6 +171,7 @@ protected:
 
 	void SortFull(TElem<INF> *Left, register TElem<INF> *Right)
 	{
+		++m_CounterRecursizeCall;
 		register TElem<INF> *Cur, *tmpLeft, *tmpRight;
 		TElem<INF> *HeadL, *HeadR, *LocalTail, *NewLeft;
 		int FirstLoop = 1;
@@ -420,14 +421,12 @@ protected:
 
 		IsCall:			if (HeadR != NULL && Right->Next != tmpRight)
 		{
-			++m_CounterRecursizeCall;
 			SortFull(Right->Next, tmpRight);
 		}
 						if (HeadL != NULL)
 						{
 							if (Left != tmpLeft->Prev)
 							{
-								++m_CounterRecursizeCall;
 								SortFull(Left, tmpLeft->Prev);
 							}
 							tmpLeft = tmpLeft->Next;
