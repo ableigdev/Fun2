@@ -9,8 +9,10 @@
 
 #ifdef UNICODE
 #define out std::wcout
+#define typeString wchar_t
 #else
 #define out std::cout
+#define typeString char
 #endif // UNICODE
 
 
