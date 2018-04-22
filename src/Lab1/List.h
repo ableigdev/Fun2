@@ -615,8 +615,6 @@ size_t List<NODETYPE>::getCounterCompare() const
 template <typename NODETYPE>
 void List<NODETYPE>::detachNode(ListNode<NODETYPE>* ptr)
 {
-	
 	ptr->prevPtr->nextPtr = ptr->nextPtr;
 	ptr->nextPtr->prevPtr = ptr->prevPtr;
-	
 }
