@@ -279,9 +279,10 @@ protected:
 							}
 							break;
 						}
-						++m_CounterCompare;
+						
 						if (tmpLeft->Next == tmpRight && tmpLeft->Inf > tmpRight->Inf)
 						{
+							++m_CounterCompare;
 							tmpLeft->Prev->Next = tmpRight;
 							tmpRight->Next->Prev = tmpLeft;
 							tmpRight->Prev = tmpLeft->Prev;
@@ -290,11 +291,18 @@ protected:
 							tmpRight->Next = tmpLeft;
 						}
 					}
-					++m_CounterCompare;
-					tmpRight = HeadR != Right->Prev && HeadR->Inf < HeadR->Prev->Inf ? HeadR : HeadR->Prev;
 					
-					++m_CounterCompare;
-					if (tmpRight != Right && tmpRight->Next != Right && tmpRight->Inf > Left->Inf && Right->Inf > tmpRight->Inf)
+					if (HeadR != Right->Prev && HeadR->Inf < HeadR->Prev->Inf)
+					{
+						tmpRight = HeadR;
+						++m_CounterCompare;
+					}
+					else
+					{
+						tmpRight = HeadR->Prev;
+					}
+					
+					if (tmpRight != Right && tmpRight->Next != Right && ++m_CounterCompare && tmpRight->Inf > Left->Inf && ++m_CounterCompare && Right->Inf > tmpRight->Inf &&)
 					{
 						Right->Prev->Next = tmpRight;
 						tmpRight->Prev->Next = Right;
@@ -322,27 +330,32 @@ protected:
 			tmpLeft = HeadL->Next;
 			while (tmpLeft != Right->Prev && tmpLeft->Prev != Left)
 			{
-				++m_CounterCompare;
-				if (tmpLeft->Inf < Right->Inf && Left->Inf < tmpLeft->Inf)
+				
+				if (tmpLeft->Inf < Right->Inf)
 				{
-					if (Left != Head)
-						Left->Prev->Next = tmpLeft;
-					else
-						Head = tmpLeft;
-					tmpLeft->Prev->Next = Left;
-					Left->Next->Prev = tmpLeft;
-					tmpLeft->Next->Prev = Left;
+					++m_CounterCompare;
+					if (Left->Inf < tmpLeft->Inf)
+					{
+						++m_CounterCompare;
+						if (Left != Head)
+							Left->Prev->Next = tmpLeft;
+						else
+							Head = tmpLeft;
+						tmpLeft->Prev->Next = Left;
+						Left->Next->Prev = tmpLeft;
+						tmpLeft->Next->Prev = Left;
 
-					Cur = Left->Prev;
-					Left->Prev = tmpLeft->Prev;
-					tmpLeft->Prev = Cur;
+						Cur = Left->Prev;
+						Left->Prev = tmpLeft->Prev;
+						tmpLeft->Prev = Cur;
 
-					Cur = Left->Next;
-					Left->Next = tmpLeft->Next;
-					tmpLeft->Next = Cur;
+						Cur = Left->Next;
+						Left->Next = tmpLeft->Next;
+						tmpLeft->Next = Cur;
 
-					Left = tmpLeft;
-					break;
+						Left = tmpLeft;
+						break;
+					}
 				}
 				tmpLeft = tmpLeft->Next;
 			}
@@ -387,8 +400,7 @@ protected:
 					do
 					{
 						Cur = Cur->Next;
-						++m_CounterCompare;
-					} while (Cur != Right && Cur->Inf >= Right->Inf);
+					} while (Cur != Right && ++m_CounterCompare && Cur->Inf >= Right->Inf);
 					LocalTail = Cur->Prev;
 					HeadR->Prev->Next = Cur;
 					Cur->Prev = HeadR->Prev;
@@ -407,8 +419,7 @@ protected:
 					continue;
 				}
 
-				++m_CounterCompare;
-				if ((HeadL == NULL) && ((Cur->Inf < LocalTail->Inf) && ((NewLeft == NULL) || (NewLeft->Inf > Cur->Inf))))
+				if ((HeadL == NULL) && ((++m_CounterCompare && Cur->Inf < LocalTail->Inf) && ((NewLeft == NULL) || (++m_CounterCompare && NewLeft->Inf > Cur->Inf))))
 					NewLeft = Cur;
 
 
