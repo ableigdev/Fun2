@@ -89,6 +89,7 @@
     <ClInclude Include="NameList.h" />
     <ClInclude Include="ReadAccessViolation.h" />
     <ClInclude Include="Student.h" />
+    <ClInclude Include="TypeStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

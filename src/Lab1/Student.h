@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <tchar.h>
+#include "TypeStream.h"
 
 template <typename TYPESTRING>
 class Student
@@ -35,9 +36,9 @@ public:
 	bool operator<(const Student<TYPESTRING>&) const;
 
 	template <typename TYPESTRING>
-	friend std::basic_ostream<TYPESTRING>& operator<<(std::basic_ostream<TYPESTRING>&, const Student<TYPESTRING>&);
+	friend listStream& operator<<(listStream&, const Student<TYPESTRING>&);
 	template <typename TYPESTRING>
-	friend std::basic_istream<TYPESTRING>& operator>>(std::basic_istream<TYPESTRING>&, Student<TYPESTRING>&);
+	friend listInStream& operator>>(listInStream&, Student<TYPESTRING>&);
 
 private:
 	int compareStudents(const Student<TYPESTRING>&) const;
@@ -199,7 +200,7 @@ bool Student<TYPESTRING>::operator<(const Student<TYPESTRING>& right) const
 }
 
 template <typename TYPESTRING>
-std::basic_ostream<TYPESTRING>& operator<<(std::basic_ostream<TYPESTRING>& output, const Student<TYPESTRING>& right)
+listStream& operator<<(listStream& output, const Student<TYPESTRING>& right)
 {
 	output << right.m_Surname << __T(" ") << right.m_Name << __T(" ")
 		<< right.m_Lastname << __T(" ") << right.m_BirthYear << __T(" ")
@@ -209,7 +210,7 @@ std::basic_ostream<TYPESTRING>& operator<<(std::basic_ostream<TYPESTRING>& outpu
 }
 
 template <typename TYPESTRING>
-std::basic_istream<TYPESTRING>& operator >> (std::basic_istream<TYPESTRING>& input, Student<TYPESTRING>& right)
+listInStream& operator >> (listInStream& input, Student<TYPESTRING>& right)
 {
 	input >> right.m_Surname >> right.m_Name >> right.m_Lastname
 		>> right.m_BirthYear >> right.m_AverageGrade;
